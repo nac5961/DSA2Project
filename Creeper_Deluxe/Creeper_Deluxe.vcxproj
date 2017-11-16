@@ -12,8 +12,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B29A7F3F-25ED-41BB-93DB-A79A918FAFDC}</ProjectGuid>
-    <RootNamespace>21_EntityManager</RootNamespace>
-    <ProjectName>21_EntityManager</ProjectName>
+    <RootNamespace>Creeper_Deluxe</RootNamespace>
+    <ProjectName>Creeper_Deluxe</ProjectName>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
