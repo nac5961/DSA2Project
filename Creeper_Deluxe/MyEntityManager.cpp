@@ -166,12 +166,92 @@ MyEntityManager::~MyEntityManager(){Release();};
 // other methods
 void Simplex::MyEntityManager::Update(void)
 {
+	/*
 	//check collisions
 	for (uint i = 0; i < m_uEntityCount - 1; i++)
 	{
 		for (uint j = i + 1; j < m_uEntityCount; j++)
 		{
 			m_entityList[i]->IsColliding(m_entityList[j]);
+		}
+	}
+	*/
+
+	//check collisions
+	for (uint i = 0; i < m_uEntityCount; i++)
+	{
+		for (uint j = 0; j < m_uEntityCount; j++)
+		{
+			//Ignore checking collisions for the ground, walls, and mob spawners
+			if (m_entityList[i]->GetUniqueID().find("Ground") != std::string::npos || m_entityList[i]->GetUniqueID().find("Wall") != std::string::npos ||
+				m_entityList[i]->GetUniqueID().find("Mob Spawner") != std::string::npos)
+			{
+				break;
+			}
+
+			//Ignore collisions with self
+			if (i == j)
+			{
+				continue;
+			}
+
+			//Ignore collisions between creepers
+			if (m_entityList[i]->GetUniqueID().find("Creeper") != std::string::npos && m_entityList[j]->GetUniqueID().find("Creeper") != std::string::npos)
+			{
+				continue;
+			}
+
+			if (m_entityList[i]->IsColliding(m_entityList[j]))
+			{
+				//Collisions with Walls
+				if (m_entityList[j]->GetUniqueID().find("Wall") != std::string::npos)
+				{
+					//Get the entity for movement
+					MyEntity* entity = m_entityList[i];
+
+					//Get the position of the model
+					vector3 pos = entity->GetPos();
+					vector3 right = entity->GetRight();
+					vector3 forward = entity->GetForward();
+
+					//Get which direction the player is moving
+					bool isForward = entity->GetMovingForward();
+					bool isRight = entity->GetMovingRight();
+					bool isBack = entity->GetMovingBack();
+					bool isLeft = entity->GetMovingLeft();
+
+					if (isForward)
+					{
+						//Update position
+						pos -= forward * 0.1f;
+					}
+					if (isBack)
+					{
+						//Update position
+						pos += forward * 0.1f;
+					}
+
+					if (isRight)
+					{
+						pos -= right * 0.1f;
+					}
+					if (isLeft)
+					{
+						pos += right * 0.1f;
+					}
+
+					//Set pos
+					entity->SetPos(pos);
+
+					//Set model matrix
+					entity->SetModelMatrix(glm::translate(pos));
+				}
+				//Handle for Steve
+				if (m_entityList[i]->GetUniqueID() == "Steve")
+				{
+					
+				}
+			}
 		}
 	}
 }

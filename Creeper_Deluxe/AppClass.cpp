@@ -37,7 +37,7 @@ void Application::InitVariables(void)
 	for (uint i = 1; i <= 4; i++)
 	{
 		//Create the entities
-		m_pEntityMngr->AddEntity("Custom\\Wall.fbx", "Wall" + i);
+		m_pEntityMngr->AddEntity("Custom\\Wall.fbx", "Wall" + std::to_string(i));
 
 		//Translate the walls to the edge of the ground (Horizontal)
 		if (i % 2 == 0)
@@ -48,7 +48,7 @@ void Application::InitVariables(void)
 				xOffset = -xOffset;
 			}
 
-			m_pEntityMngr->SetModelMatrix(glm::translate(vector3(xOffset, 0.0f, 0.0f)), "Wall" + i);
+			m_pEntityMngr->SetModelMatrix(glm::translate(vector3(xOffset, 0.0f, 0.0f)), "Wall" + std::to_string(i));
 		}
 
 		//Translate the walls to the edge of the ground (Vertical)
@@ -62,7 +62,7 @@ void Application::InitVariables(void)
 
 			matrix4 m4Model = glm::translate(vector3(0.0f, 0.0f, zOffset)); //translate
 			m4Model = m4Model * glm::rotate(IDENTITY_M4, 90.0f, AXIS_Y); //rotate
-			m_pEntityMngr->SetModelMatrix(m4Model, "Wall" + i);
+			m_pEntityMngr->SetModelMatrix(m4Model, "Wall" + std::to_string(i));
 		}
 	}
 
@@ -70,12 +70,18 @@ void Application::InitVariables(void)
 	m_pEntityMngr->AddEntity("Custom\\Steve.fbx", "Steve");
 	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(2.0f, 0.0f, 0.0f))); //Start Steve slightly to the right
 
-																			  //Creeper
+	//Creeper
 	m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
 	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(-2.0f, 0.0f, 0.0f))); //Start Creeper slightly to the left
 
-																			   //Mob Spawners
+	//Mob Spawners
 	m_pEntityMngr->AddEntity("Custom\\Mob Spawner.fbx", "Mob Spawner");
+
+	std::string oll = "Wall1";
+	if (oll.find("Wall2") != std::string::npos)
+	{
+		std::cout << "I found it";
+	}
 }
 void Application::Update(void)
 {
@@ -89,6 +95,9 @@ void Application::Update(void)
 	CameraRotation();
 
 	/* Set the updated model matrices for Steve and the Creepers here */
+	//m_pEntityMngr->SetModelMatrix(glm::translate(m_v3Creeper) * ToMatrix4(m_qArcBall), "Creeper");
+	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
+	m_pEntityMngr->SetModelMatrix(glm::translate(player->GetPos()), "Creeper");
 	//--
 	//--
 	//--
