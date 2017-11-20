@@ -28,7 +28,7 @@ void Application::InitVariables(void)
 
 	//Position the ground to make the very top have a y position of 0.
 	float yOffset = GroundHalfWidth.y; //get distance from origin to the center of the ground
-	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, -yOffset, 0.0f))); //translate the ground down to have the top be (0,0,0)
+	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, -yOffset, 0.0f)), "Ground"); //translate the ground down to have the top be (0,0,0)
 
 	float xOffset = GroundHalfWidth.x;
 	float zOffset = GroundHalfWidth.z;
@@ -39,40 +39,72 @@ void Application::InitVariables(void)
 		//Create the entities
 		m_pEntityMngr->AddEntity("Custom\\Wall.fbx", "Wall" + std::to_string(i));
 
+		//Transformation matrix
+		matrix4 m4Model;
+
 		//Translate the walls to the edge of the ground (Horizontal)
 		if (i % 2 == 0)
 		{
-			//Put Wall on opposite side
+			matrix4 translation;
+			matrix4 rotation;
+
 			if (i == 4)
 			{
-				xOffset = -xOffset;
+				//Set the transformation
+				translation = glm::translate(vector3(-xOffset, 0.0f, 0.0f));
+				rotation = glm::rotate(IDENTITY_M4, 90.0f, AXIS_Y);
+			}
+			else
+			{
+				//Set the transformation
+				translation = glm::translate(vector3(xOffset, 0.0f, 0.0f));
+				rotation = glm::rotate(IDENTITY_M4, -90.0f, AXIS_Y);
 			}
 
-			m_pEntityMngr->SetModelMatrix(glm::translate(vector3(xOffset, 0.0f, 0.0f)), "Wall" + std::to_string(i));
+			//Rotate the model's forward
+			MyEntity* wall = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Wall" + std::to_string(i)));
+			vector3 v3Forward = wall->GetForward();
+			v3Forward = vector3(rotation * vector4(v3Forward, 0.0f));
+			wall->SetForward(v3Forward);
+
+			//Set the model matrix
+			m4Model = translation * rotation;
+			m_pEntityMngr->SetModelMatrix(m4Model, "Wall" + std::to_string(i));
 		}
 
 		//Translate the walls to the edge of the ground (Vertical)
 		else
 		{
-			//Put wall on opposite side
+			//Put Wall on opposite side
 			if (i == 3)
 			{
-				zOffset = -zOffset;
+				//Set the model matrix
+				matrix4 translation = glm::translate(vector3(0.0f, 0.0f, zOffset));
+				matrix4 rotation = glm::rotate(IDENTITY_M4, 180.0f, AXIS_Y);
+				m4Model = translation * rotation;
+
+				//Rotate the model's forward
+				MyEntity* wall = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Wall" + std::to_string(i)));
+				vector3 v3Forward = wall->GetForward();
+				v3Forward = vector3(rotation * vector4(v3Forward, 0.0f));
+				wall->SetForward(v3Forward);
+			}
+			else
+			{
+				m4Model = glm::translate(vector3(0.0f, 0.0f, -zOffset));
 			}
 
-			matrix4 m4Model = glm::translate(vector3(0.0f, 0.0f, zOffset)); //translate
-			m4Model = m4Model * glm::rotate(IDENTITY_M4, 90.0f, AXIS_Y); //rotate
 			m_pEntityMngr->SetModelMatrix(m4Model, "Wall" + std::to_string(i));
 		}
 	}
 
 	//Player (Steve)
 	m_pEntityMngr->AddEntity("Custom\\Steve.fbx", "Steve");
-	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(2.0f, 0.0f, 0.0f))); //Start Steve slightly to the right
+	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(2.0f, 0.0f, 0.0f)), "Steve"); //Start Steve slightly to the right
 
 	//Creeper
 	m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(-2.0f, 0.0f, 0.0f))); //Start Creeper slightly to the left
+	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(-2.0f, 0.0f, 0.0f)), "Creeper"); //Start Creeper slightly to the left
 
 	//Mob Spawners
 	m_pEntityMngr->AddEntity("Custom\\Mob Spawner.fbx", "Mob Spawner");
