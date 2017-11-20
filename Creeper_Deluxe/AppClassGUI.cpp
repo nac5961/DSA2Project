@@ -118,21 +118,31 @@ struct ConsoleAndLog
 void Application::DrawGUI(void)
 {
 #pragma region Debugging Information
+	uint nEmptyLines = 0;
+
+	//Creeper Deluxe Debug
+	if (m_bDebug)
+	{
+		nEmptyLines = 18;
+
+		m_pMeshMngr->PrintLine("  " + m_pSystem->GetAppName(), C_YELLOW);
+
+		m_pMeshMngr->Print("  RenderCalls: ");//Add a line on top
+		m_pMeshMngr->PrintLine(std::to_string(m_uRenderCallCount), C_YELLOW);
+
+		m_pMeshMngr->Print("  FPS:");
+		m_pMeshMngr->PrintLine(std::to_string(m_pSystem->GetFPS()), C_RED);
+	}
+	else
+	{
+		nEmptyLines = 21;
+	}
+
 	//Print info on the screen
-	uint nEmptyLines = 20;
 	for (uint i = 0; i < nEmptyLines; ++i)
 		m_pMeshMngr->PrintLine("");//Add a line on top
-	//m_pMeshMngr->Print("						");
-	m_pMeshMngr->PrintLine(m_pSystem->GetAppName(), C_YELLOW);
-	//m_pMeshMngr->Print("						");
 
-	//m_pMeshMngr->Print("						");
-	m_pMeshMngr->Print("RenderCalls: ");//Add a line on top
-	m_pMeshMngr->PrintLine(std::to_string(m_uRenderCallCount), C_YELLOW);
-
-	//m_pMeshMngr->Print("						");
-	m_pMeshMngr->Print("FPS:");
-	m_pMeshMngr->PrintLine(std::to_string(m_pSystem->GetFPS()), C_RED);
+	m_pMeshMngr->Print("  Lives: " + std::to_string(m_iNumLives) + "									" + "Kill Count: " + std::to_string(m_iNumKilled));
 #pragma endregion
 
 	//Calculate the window size to know how to draw
@@ -146,6 +156,7 @@ void Application::DrawGUI(void)
 		ImGui::SetNextWindowPos(ImVec2(1, 1), ImGuiSetCond_FirstUseEver);
 		ImGui::SetNextWindowSize(ImVec2(340, 60), ImGuiSetCond_FirstUseEver);
 		String sAbout = m_pSystem->GetAppName() + " - About";
+		/*
 		ImGui::Begin(sAbout.c_str(), (bool*)0, window_flags);
 		{
 			ImGui::Text("Programmer: \n");
@@ -168,6 +179,7 @@ void Application::DrawGUI(void)
 			ImGui::TextColored(ImColor(255, 255, 0), "Entity Manager\n");
 		}
 		ImGui::End();
+		*/
 	}
 	
 	//Credits
