@@ -88,25 +88,12 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 void Application::ProcessKeyReleased(sf::Event a_event)
 {
 	static bool bFPSControl = false;
-	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
 
 	switch (a_event.key.code)
 	{
 	default: break;
 	case sf::Keyboard::Escape:
 		m_bRunning = false;
-		break;
-	case sf::Keyboard::Left:
-		player->SetMovingLeft(false);
-		break;
-	case sf::Keyboard::Right:
-		player->SetMovingRight(false);
-		break;
-	case sf::Keyboard::Up:
-		player->SetMovingForward(false);
-		break;
-	case sf::Keyboard::Down:
-		player->SetMovingBack(false);
 		break;
 	case sf::Keyboard::F1:
 		m_pCameraMngr->SetCameraMode(CAM_PERSP);
@@ -447,10 +434,6 @@ void Application::ProcessKeyboard(void)
 		//Get the player entity
 		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
 
-		//Mark that the player is moving left
-		player->SetMovingRight(false);
-		player->SetMovingLeft(true);
-
 		//Get the position and right vector of the player
 		vector3 pos = player->GetPos();
 		vector3 right = player->GetRight();
@@ -466,10 +449,6 @@ void Application::ProcessKeyboard(void)
 	{
 		//Get the player entity
 		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-
-		//Mark that the player is moving right
-		player->SetMovingRight(true);
-		player->SetMovingLeft(false);
 
 		//Get the position and right vector of the player
 		vector3 pos = player->GetPos();
@@ -488,10 +467,6 @@ void Application::ProcessKeyboard(void)
 		{
 			//Get the player entity
 			MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-
-			//Mark that the player is moving forward
-			player->SetMovingForward(true);
-			player->SetMovingBack(false);
 
 			//Get the position and forward vector of the player
 			vector3 pos = player->GetPos();
@@ -529,10 +504,6 @@ void Application::ProcessKeyboard(void)
 		{
 			//Get the player entity
 			MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-
-			//Mark that the player is moving backward
-			player->SetMovingForward(false);
-			player->SetMovingBack(true);
 
 			//Get the position and forward vector of the player
 			vector3 pos = player->GetPos();

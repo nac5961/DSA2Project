@@ -127,9 +127,123 @@ void Application::Update(void)
 	CameraRotation();
 
 	/* Set the updated model matrices for Steve and the Creepers here */
+	for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++)
+	{
+		//Ignore walls, the ground, and mob spawners
+		if (m_pEntityMngr->GetUniqueID(i).find("Wall") != std::string::npos || m_pEntityMngr->GetUniqueID(i).find("Ground") != std::string::npos
+			|| m_pEntityMngr->GetUniqueID(i).find("Mob Spawner") != std::string::npos)
+		{
+			continue;
+		}
+
+		//Delete the entity if it's ready to be deleted (Creeper and Bullet)
+		if (m_pEntityMngr->GetEntity(i)->GetCanDelete())
+		{
+			//Remove the entity from the list
+			m_pEntityMngr->RemoveEntity(i);
+
+			//Set i back 1 to represent the accurate index
+			i--;
+
+			//Go to the next iteration
+			continue;
+		}
+
+		//Creeper
+		if (m_pEntityMngr->GetUniqueID(i).find("Creeper") != std::string::npos)
+		{
+			//Get the creeper and player entity
+			MyEntity* creeper = m_pEntityMngr->GetEntity(i);
+			MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+
+			//Get the player's and the creeper's position
+			vector3 creeperPos = creeper->GetPos();
+			vector3 playerPos = player->GetPos();
+
+			//Creeper is stunned
+			if (creeper->GetWaitTime() > 0.0f)
+			{
+				//Get the stun/wait time
+				float waitTime = creeper->GetWaitTime();
+
+				//Decrease it by delta time
+				//waitTime -=
+
+				//Clamp the wait time
+				if (waitTime <= 0.0f)
+				{
+					waitTime = 0.0f;
+				}
+
+				//Update the wait time
+				creeper->SetWaitTime(waitTime);
+			}
+
+			//Creeper not stunned
+			else
+			{
+				//Get vector from the creeper to the player
+
+				//Normalize the vector
+
+				//Set vector as the creeper's new forward
+
+				//Add the creeper's forward to the creeper's position
+			}
+
+			//Set the model matrix of the creeper to translate to its new position
+		}
+
+		//Player
+		else if (m_pEntityMngr->GetUniqueID(i).find("Steve") != std::string::npos)
+		{
+			//Get the player entity
+			MyEntity* player = m_pEntityMngr->GetEntity(i);
+
+			//Get the translation and rotation matrices
+			//matrix4 translation = glm::translate(player->GetPos());
+			//matrix4 rotation = ToMatrix4();
+			//matrix4 m4Model = translation * rotation;
+
+			//Get translation matrix
+			matrix4 m4Model = glm::translate(player->GetPos());
+
+			//Set the model matrix
+			m_pEntityMngr->SetModelMatrix(m4Model, i);
+		}
+
+		//Bullet
+		else if (m_pEntityMngr->GetUniqueID(i).find("Bullet") != std::string::npos)
+		{
+			//Get the bullet entity
+			MyEntity* bullet = m_pEntityMngr->GetEntity(i);
+
+			//Get the position and forward vectors
+			vector3 bulletPos = bullet->GetPos();
+			vector3 bulletForward = bullet->GetForward();
+
+			//Move the bullet along the forward vector
+			bulletPos += bulletForward * 0.1f;
+
+			//Set the bullet's new position
+			bullet->SetPos(bulletPos);
+
+			//Set the model matrix
+			m_pEntityMngr->SetModelMatrix(glm::translate(bulletPos), i);
+
+			//Decrease the bullet's life time
+			
+			//Check if the bullet needs to be deleted
+			if (bullet->GetLifeTime() <= 0)
+			{
+				bullet->MarkToDelete();
+			}
+		}
+
+	}
 	//m_pEntityMngr->SetModelMatrix(glm::translate(m_v3Creeper) * ToMatrix4(m_qArcBall), "Creeper");
-	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-	m_pEntityMngr->SetModelMatrix(glm::translate(player->GetPos()), "Creeper");
+	//MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
+	//m_pEntityMngr->SetModelMatrix(glm::translate(player->GetPos()), "Creeper");
 	//--
 	//--
 	//--

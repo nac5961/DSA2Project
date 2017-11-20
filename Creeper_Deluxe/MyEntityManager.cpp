@@ -166,25 +166,20 @@ MyEntityManager::~MyEntityManager(){Release();};
 // other methods
 void Simplex::MyEntityManager::Update(void)
 {
-	/*
-	//check collisions
-	for (uint i = 0; i < m_uEntityCount - 1; i++)
-	{
-		for (uint j = i + 1; j < m_uEntityCount; j++)
-		{
-			m_entityList[i]->IsColliding(m_entityList[j]);
-		}
-	}
-	*/
-
 	//check collisions
 	for (uint i = 0; i < m_uEntityCount; i++)
 	{
 		for (uint j = 0; j < m_uEntityCount; j++)
 		{
-			//Ignore checking collisions for the ground, walls, and mob spawners
+			//Don't perform any calculations if the game is over
+			if (gameOver)
+			{
+				break;
+			}
+
+			//Ignore checking collisions for the ground, walls, mob spawners, and bullets
 			if (m_entityList[i]->GetUniqueID().find("Ground") != std::string::npos || m_entityList[i]->GetUniqueID().find("Wall") != std::string::npos ||
-				m_entityList[i]->GetUniqueID().find("Mob Spawner") != std::string::npos)
+				m_entityList[i]->GetUniqueID().find("Mob Spawner") != std::string::npos || m_entityList[i]->GetUniqueID().find("Bullet") != std::string::npos)
 			{
 				break;
 			}
@@ -195,61 +190,112 @@ void Simplex::MyEntityManager::Update(void)
 				continue;
 			}
 
-			//Ignore collisions between creepers
-			if (m_entityList[i]->GetUniqueID().find("Creeper") != std::string::npos && m_entityList[j]->GetUniqueID().find("Creeper") != std::string::npos)
+			//Collisions for creepers
+			if (m_entityList[i]->GetUniqueID().find("Creeper") != std::string::npos)
 			{
-				continue;
-			}
-
-			if (m_entityList[i]->IsColliding(m_entityList[j]))
-			{
-				//Collisions with Walls
+				//Check collisions with walls
 				if (m_entityList[j]->GetUniqueID().find("Wall") != std::string::npos)
 				{
-					//Get the entity for movement
-					MyEntity* entity = m_entityList[i];
-
-					//Get the position of the model
-					vector3 pos = entity->GetPos();
-					vector3 right = entity->GetRight();
-					vector3 forward = entity->GetForward();
-
-					//Get which direction the player is moving
-					bool isForward = entity->GetMovingForward();
-					bool isRight = entity->GetMovingRight();
-					bool isBack = entity->GetMovingBack();
-					bool isLeft = entity->GetMovingLeft();
-
-					if (isForward)
+					if (m_entityList[i]->IsColliding(m_entityList[j]))
 					{
-						//Update position
-						pos -= forward * 0.1f;
-					}
-					if (isBack)
-					{
-						//Update position
-						pos += forward * 0.1f;
-					}
+						//Get the entity for the wall and the creeper
+						MyEntity* creeper = m_entityList[i];
+						MyEntity* wall = m_entityList[j];
 
-					if (isRight)
-					{
-						pos -= right * 0.1f;
-					}
-					if (isLeft)
-					{
-						pos += right * 0.1f;
-					}
+						//Get the position of the creeper
+						vector3 creeperPos = creeper->GetPos();
 
-					//Set pos
-					entity->SetPos(pos);
+						//Get the forward of the wall
+						vector3 wallForward = wall->GetForward();
 
-					//Set model matrix
-					entity->SetModelMatrix(glm::translate(pos));
+						//Move creeper back according to the wall's forward
+						creeperPos += wallForward * 0.1f;
+
+						//Set the creeper's new position
+						creeper->SetPos(creeperPos);
+
+						//Set the creeper's model matrix
+						creeper->SetModelMatrix(glm::translate(creeperPos));
+					}
 				}
-				//Handle for Steve
-				if (m_entityList[i]->GetUniqueID() == "Steve")
+
+				//Check collisions with bullet
+				if (m_entityList[j]->GetUniqueID().find("Bullet") != std::string::npos)
 				{
-					
+					if (m_entityList[i]->IsColliding(m_entityList[j]))
+					{
+						if (m_entityList[i]->GetCanDelete() == false && m_entityList[j]->GetCanDelete() == false)
+						{
+							//Mark the bullet and the creeper for deletion
+							m_entityList[i]->MarkToDelete();
+							m_entityList[j]->MarkToDelete();
+						}
+					}
+				}
+			}
+
+			//Collisions for the player (Steve)
+			else if (m_entityList[i]->GetUniqueID().find("Steve") != std::string::npos)
+			{
+				//Check collisions with walls
+				if (m_entityList[j]->GetUniqueID().find("Wall") != std::string::npos)
+				{
+					if (m_entityList[i]->IsColliding(m_entityList[j]))
+					{
+						//Get the entity for the wall and the player
+						MyEntity* player = m_entityList[i];
+						MyEntity* wall = m_entityList[j];
+
+						//Get the position of the player
+						vector3 playerPos = player->GetPos();
+
+						//Get the forward of the wall
+						vector3 wallForward = wall->GetForward();
+
+						//Move player back according to the wall's forward
+						playerPos += wallForward * 0.1f;
+
+						//Set the player's new position
+						player->SetPos(playerPos);
+
+						//Set the player's model matrix
+						player->SetModelMatrix(glm::translate(playerPos));
+					}
+				}
+
+				//Check collisions with creepers
+				else if (m_entityList[j]->GetUniqueID().find("Creeper") != std::string::npos)
+				{
+					if (m_entityList[i]->IsColliding(m_entityList[j]))
+					{
+						//Get the creeper's entity
+						MyEntity* creeper = m_entityList[j];
+
+						//Only damage the player if the creeper isn't stunned
+						//Note: creepers are stunned once they damage the player to avoid
+						//dealing constant damage
+						if (creeper->GetWaitTime() <= 0.0f)
+						{
+							//Decrease the player's # of lives
+							numLives--;
+						}
+
+						//Check if the game is over
+						if (numLives <= 0)
+						{
+							gameOver = true;
+						}
+
+						//Perform calculations if the game isn't over
+						if (!gameOver)
+						{
+							//Stop the creeper from moving
+							if (creeper->GetWaitTime() <= 0.0f)
+							{
+								creeper->ResetWaitTime();
+							}
+						}
+					}
 				}
 			}
 		}
