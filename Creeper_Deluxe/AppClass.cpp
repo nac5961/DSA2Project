@@ -68,7 +68,10 @@ void Application::InitVariables(void)
 
 	//Player (Steve)
 	m_pEntityMngr->AddEntity("Custom\\Steve.fbx", "Steve");
-	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(2.0f, 0.0f, 0.0f))); //Start Steve slightly to the right
+	//m_pEntityMngr->GetModel("Steve")->SetModelMatrix(IDENTITY_M4);
+	m_pEntityMngr->GetModel("Steve")->SetModelMatrix(glm::translate(m_pCameraMngr->GetPosition()));
+	
+	//m_pEntityMngr->SetModelMatrix(glm::translate(vector3(2.0f, 0.0f, 0.0f))); //Start Steve slightly to the right
 
 																			  //Creeper
 	m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
@@ -92,7 +95,14 @@ void Application::Update(void)
 	//--
 	//--
 	//--
+	//m_pEntityMngr->GetModel("Steve")->SetModelMatrix(m_pCameraMngr->GetCamera()->GetViewMatrix() * glm::translate(m_pCameraMngr->GetPosition() - vector3(0.0f, 1.7f, 1.0f)));
+	m_pEntityMngr->GetModel("Steve")->SetModelMatrix(glm::translate(m_pCameraMngr->GetPosition() - vector3(0.0f, 1.7f, 0.0f)) *
+													 glm::inverse(glm::extractMatrixRotation(m_pCameraMngr->GetCamera()->GetViewMatrix())) * 
+													 glm::rotate(IDENTITY_M4, 180.0f, AXIS_Y));
+	//m_pEntityMngr->GetModel("Steve")->SetModelMatrix(m_pEntityMngr->GetModelMatrix(1) * glm::rotate(IDENTITY_M4, 0.0f, AXIS_Y));
+	
 
+		//->SetModelMatrix(m_pCameraMngr->GetCamera()->GetViewMatrix());
 	//Update Entity Manager
 	m_pEntityMngr->Update();
 

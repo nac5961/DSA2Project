@@ -1,4 +1,5 @@
 #include "AppClass.h"
+#include "GL\glut.h"
 using namespace Simplex;
 //Mouse
 void Application::ProcessMouseMovement(sf::Event a_event)
@@ -24,10 +25,10 @@ void Application::ProcessMousePressed(sf::Event a_event)
 		gui.m_bMousePressed[1] = true;
 		m_bArcBall = true;
 		break;
-	case sf::Mouse::Button::Right:
+	/*case sf::Mouse::Button::Right:
 		gui.m_bMousePressed[2] = true;
 		m_bFPC = true;
-		break;
+		break;*/
 	}
 
 	for (int i = 0; i < 3; i++)
@@ -45,10 +46,10 @@ void Application::ProcessMouseReleased(sf::Event a_event)
 		gui.m_bMousePressed[1] = false;
 		m_bArcBall = false;
 		break;
-	case sf::Mouse::Button::Right:
+	/*case sf::Mouse::Button::Right:
 		gui.m_bMousePressed[2] = false;
 		m_bFPC = false;
-		break;
+		break;*/
 	}
 
 	for (int i = 0; i < 3; i++)
@@ -71,6 +72,15 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 	switch (a_event.key.code)
 	{
 	default: break;
+	case sf::Keyboard::F:
+		m_bFPC = !m_bFPC;
+		if (m_bFPC) {
+			//glutSetCursor(GLUT_CURSOR_NONE);
+		}
+		else {
+			//glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
+		}
+		break;
 	case sf::Keyboard::Space:
 		m_sound.play();
 		break;
@@ -107,10 +117,10 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 	case sf::Keyboard::F4:
 		m_pCameraMngr->SetCameraMode(CAM_ORTHO_X);
 		break;
-	case sf::Keyboard::F:
+	/*case sf::Keyboard::F:
 		bFPSControl = !bFPSControl;
 		m_pCameraMngr->SetFPS(bFPSControl);
-		break;
+		break;*/
 	case sf::Keyboard::Add:
 		++m_uActCont;
 		m_uActCont %= 8;
