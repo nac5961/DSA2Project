@@ -406,6 +406,10 @@ void Application::CameraRotation(float a_fSpeed)
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 
 	/* Write the rotation code here */
+	//Use the quaternion in the MyEntity class for rotations
+	//There are accessors called GetRotation and SetRotation, use that
+	//If you need to look up any changes I made for methods to use,
+	//everything is in the MyEntity.h header file.
 }
 //Keyboard
 void Application::ProcessKeyboard(void)
