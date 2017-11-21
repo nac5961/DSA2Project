@@ -184,7 +184,9 @@ void Application::Update(void)
 		if ((uint)fTime == 5) {
 			for (int i = 0; i < 5; i++) {
 				m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-				m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, ((float)creeperCount), 0.0f)));
+				MyEntity* creeper = m_pEntityMngr->GetEntity(-1);
+				creeper->SetPos(vector3(0.0f, 0.0f, (float)creeperCount));
+				m_pEntityMngr->SetModelMatrix(glm::translate(creeper->GetPos()));
 				creeperCount++;
 			}
 			fTime = m_pSystem->GetDeltaTime(uClock);
@@ -315,7 +317,14 @@ void Application::Update(void)
 	m_pCameraMngr->SetPositionTargetAndUp(offset, offset + player->GetForward(), player->GetUp());
 
 	//Add objects to render list
-	m_pEntityMngr->AddEntityToRenderList(-1, true);
+	if (m_bDebug)
+	{
+		m_pEntityMngr->AddEntityToRenderList(-1, true);
+	}
+	else
+	{
+		m_pEntityMngr->AddEntityToRenderList(-1, false);
+	}
 }
 void Application::Display(void)
 {
