@@ -404,24 +404,6 @@ void Application::CameraRotation(float a_fSpeed)
 	//m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
 	//m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
-
-	//Get the player entity
-	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
-
-	//Get the forward and right vectors
-	vector3 playerForward = player->GetForward();
-	vector3 playerRight = player->GetRight();
-	quaternion playerRotation = player->GetRotation();
-
-	//Rotate by the fAngleY only
-	playerRotation = playerRotation * glm::angleAxis(fAngleY * 3.0f, AXIS_Y);
-	playerForward = vector3(ToMatrix4(glm::angleAxis(fAngleY * 3.0f, AXIS_Y)) * vector4(playerForward, 0.0f));//vector3(glm::rotate(IDENTITY_M4, fAngleY, AXIS_Y) * vector4(playerForward, 0.0f));
-	playerRight = vector3(ToMatrix4(glm::angleAxis(fAngleY * 3.0f, AXIS_Y)) * vector4(playerRight, 0.0f));//vector3(glm::rotate(IDENTITY_M4, fAngleY, AXIS_Y) * vector4(playerRight, 0.0f));
-
-	//Set the updated forward and right vectors
-	player->SetForward(playerForward);
-	player->SetRight(playerRight);
-	player->SetRotation(playerRotation);
 }
 //Keyboard
 void Application::ProcessKeyboard(void)
