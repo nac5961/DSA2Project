@@ -173,7 +173,7 @@ void Application::Update(void)
 	// Generates Creepers
 	// Creates 5 every five sentences
 	// For this version, they begin spawning at the beginning of the world and move creeperCount units forward (just so we can see and make sure it works right)
-	if (creeperCount < 200) {
+	if (creeperCount < 30) {
 		fTime += deltaTime;
 
 		if ((uint)fTime == 5) {
