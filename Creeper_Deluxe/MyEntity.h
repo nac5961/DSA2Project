@@ -13,6 +13,17 @@ namespace Simplex
 //System Class
 class MyEntity
 {
+	bool canDelete = false; //for bullets and creepers
+
+	float lifeTime = 4.0f; //for bullets
+	float waitTime = 0.0f; //for creepers
+
+	//for all entities
+	vector3 pos = ZERO_V3;
+	vector3 forward = AXIS_Z;
+	vector3 up = AXIS_Y;
+	vector3 right = AXIS_X;
+
 	bool m_bInMemory = false; //loaded flag
 	bool m_bSetAxis = false; //render axis flag
 	String m_sUniqueID = ""; //Unique identifier name
