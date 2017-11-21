@@ -240,6 +240,9 @@ void Simplex::MyEntityManager::Update(void)
 							//Mark the bullet and the creeper for deletion
 							m_entityList[i]->MarkToDelete();
 							m_entityList[j]->MarkToDelete();
+
+							//Increase the player's kill count
+							numKilled++;
 						}
 					}
 				}
