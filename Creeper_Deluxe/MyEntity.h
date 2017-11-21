@@ -37,6 +37,29 @@ class MyEntity
 	static std::map<String, MyEntity*> m_IDMap; //a map of the unique ID's
 
 public:
+	/* Getters and Setters */
+	void MarkToDelete() { canDelete = true; }
+	bool GetCanDelete() { return canDelete; }
+
+	void DecreaseLifeTime(float a_fTime) { lifeTime -= a_fTime; }
+	float GetLifeTime() { return lifeTime; }
+
+	void ResetWaitTime() { waitTime = 3.0f; }
+	void SetWaitTime(float a_fTime) { waitTime = a_fTime; }
+	float GetWaitTime() { return waitTime; }
+
+	void SetPos(vector3 a_v3Pos) { pos = a_v3Pos; }
+	vector3 GetPos() { return pos; }
+
+	void SetRight(vector3 a_v3Pos) { right = a_v3Pos; }
+	vector3 GetRight() { return right; }
+
+	void SetUp(vector3 a_v3Pos) { up = a_v3Pos; }
+	vector3 GetUp() { return up; }
+
+	void SetForward(vector3 a_v3Pos) { forward = a_v3Pos; }
+	vector3 GetForward() { return forward; }
+
 	/*
 	Usage: Constructor that specifies the name attached to the Entity
 	Arguments:
