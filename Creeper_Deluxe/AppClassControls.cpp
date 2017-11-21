@@ -423,17 +423,91 @@ void Application::ProcessKeyboard(void)
 	if (bMultiplier)
 		fMultiplier = 5.0f;
 
+	//Move forward
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		m_pCameraMngr->MoveForward(m_fMovementSpeed * fMultiplier);
+	{
+		//Get the entity for the player
+		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
 
+		//Get the player's position and forward vector
+		vector3 playerPos = player->GetPos();
+		vector3 playerForward = player->GetForward();
+
+		//Add the forward to the position
+		playerPos += playerForward * 0.1f;
+
+		//Set the player's new position
+		player->SetPos(playerPos);
+
+		//Set the camera's position, target, and up vectors
+		vector3 offset = playerPos + vector3(0.0f, 1.6f, 0.0f);
+		m_pCameraMngr->SetPositionTargetAndUp(offset, offset + playerForward, player->GetUp());
+	}
+
+	//Move backward
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		m_pCameraMngr->MoveForward(-m_fMovementSpeed * fMultiplier);
+	{
+		//Get the entity for the player
+		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
 
+		//Get the player's position and forward vector
+		vector3 playerPos = player->GetPos();
+		vector3 playerForward = player->GetForward();
+
+		//Subtract the forward from the position
+		playerPos -= playerForward * 0.1f;
+
+		//Set the player's new position
+		player->SetPos(playerPos);
+
+		//Set the camera's position, target, and up vectors
+		vector3 offset = playerPos + vector3(0.0f, 1.6f, 0.0f);
+		m_pCameraMngr->SetPositionTargetAndUp(offset, offset + playerForward, player->GetUp());
+	}
+
+	//Move left
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		m_pCameraMngr->MoveSideways(-m_fMovementSpeed * fMultiplier);
+	{
+		//Get the entity for the player
+		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
 
+		//Get the player's position and right vector
+		vector3 playerPos = player->GetPos();
+		vector3 playerRight = player->GetRight();
+		vector3 playerForward = player->GetForward(); //used for camera
+
+		//Add the right to the position
+		playerPos += playerRight * 0.1f;
+
+		//Set the player's new position
+		player->SetPos(playerPos);
+
+		//Set the camera's position, target, and up vectors
+		vector3 offset = playerPos + vector3(0.0f, 1.6f, 0.0f);
+		m_pCameraMngr->SetPositionTargetAndUp(offset, offset + playerForward, player->GetUp());
+	}
+
+	//Move right
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		m_pCameraMngr->MoveSideways(m_fMovementSpeed * fMultiplier);
+	{
+		//Get the entity for the player
+		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+
+		//Get the player's position and right vector
+		vector3 playerPos = player->GetPos();
+		vector3 playerRight = player->GetRight();
+		vector3 playerForward = player->GetForward(); //used for camera
+
+		//Subtract the right from the position
+		playerPos -= playerRight * 0.1f;
+
+		//Set the player's new position
+		player->SetPos(playerPos);
+
+		//Set the camera's position, target, and up vectors
+		vector3 offset = playerPos + vector3(0.0f, 1.6f, 0.0f);
+		m_pCameraMngr->SetPositionTargetAndUp(offset, offset + playerForward, player->GetUp());
+	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 		m_pCameraMngr->MoveVertical(-m_fMovementSpeed * fMultiplier);

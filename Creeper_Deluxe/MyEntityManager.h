@@ -20,6 +20,7 @@ class MyEntityManager
 	static MyEntityManager* m_pInstance; // Singleton pointer
 	std::vector<MyEntity*> m_entityList; //entities list
 public:
+	uint GetEntityCount() { return m_uEntityCount; }
 	/*
 	Usage: Gets the singleton pointer
 	Arguments: ---
