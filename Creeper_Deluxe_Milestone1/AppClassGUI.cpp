@@ -123,7 +123,7 @@ void Application::DrawGUI(void)
 	//Creeper Deluxe Debug
 	if (m_bDebug)
 	{
-		nEmptyLines = 17;
+		nEmptyLines = 18;
 
 		m_pMeshMngr->PrintLine("  " + m_pSystem->GetAppName(), C_YELLOW);
 
@@ -135,16 +135,14 @@ void Application::DrawGUI(void)
 	}
 	else
 	{
-		nEmptyLines = 20;
+		nEmptyLines = 21;
 	}
 
 	//Print info on the screen
 	for (uint i = 0; i < nEmptyLines; ++i)
 		m_pMeshMngr->PrintLine("");//Add a line on top
 
-	m_pMeshMngr->PrintLine("  Lives: " + std::to_string(m_pEntityMngr->GetNumLives()));
-	m_pMeshMngr->PrintLine("");
-	m_pMeshMngr->PrintLine("  Kill Count: " + std::to_string(m_pEntityMngr->GetNumKilled()));
+	m_pMeshMngr->Print("  Lives: " + std::to_string(m_iNumLives) + "									" + "Kill Count: " + std::to_string(m_iNumKilled));
 #pragma endregion
 
 	//Calculate the window size to know how to draw

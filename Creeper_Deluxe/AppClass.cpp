@@ -2,12 +2,6 @@
 using namespace Simplex;
 void Application::InitVariables(void)
 {
-	////Change this to your name and email
-	//m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
-
-	////Alberto needed this at this position for software recording.
-	//m_pWindow->setPosition(sf::Vector2i(710, 0));
-
 	//Set the position and target of the camera
 	m_pCameraMngr->SetPositionTargetAndUp(
 		vector3(0.0f, 1.0f, 13.0f), //Position
@@ -16,7 +10,7 @@ void Application::InitVariables(void)
 
 	m_pLightMngr->SetPosition(vector3(0.0f, 3.0f, 13.0f), 1); //set the position of first light (0 is reserved for ambient light)
 
-															  //Entity Manager
+	//Entity Manager
 	m_pEntityMngr = MyEntityManager::GetInstance();
 
 	//Ground
@@ -100,20 +94,14 @@ void Application::InitVariables(void)
 
 	//Player (Steve)
 	m_pEntityMngr->AddEntity("Custom\\Steve.fbx", "Steve");
-	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(2.0f, 0.0f, 0.0f)), "Steve"); //Start Steve slightly to the right
-
+	m_pEntityMngr->GetModel("Steve")->SetModelMatrix(glm::translate(m_pCameraMngr->GetPosition()));
+	
 	//Creeper
 	m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
 	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(-2.0f, 0.0f, 0.0f)), "Creeper"); //Start Creeper slightly to the left
 
 	//Mob Spawners
 	m_pEntityMngr->AddEntity("Custom\\Mob Spawner.fbx", "Mob Spawner");
-
-	std::string oll = "Wall1";
-	if (oll.find("Wall2") != std::string::npos)
-	{
-		std::cout << "I found it";
-	}
 }
 void Application::Update(void)
 {
@@ -125,6 +113,28 @@ void Application::Update(void)
 
 	//Is the first person camera active?
 	CameraRotation();
+
+	//Statics for creeper generation and delta time
+	static short creeperCount = 0;
+	static float fTime = 0;
+	static uint uClock = m_pSystem->GenClock();
+	float deltaTime = m_pSystem->GetDeltaTime(uClock);
+	
+	// Generates Creepers
+	// Creates 5 every five sentences
+	// For this version, they begin spawning at the beginning of the world and move creeperCount units forward (just so we can see and make sure it works right)
+	if (creeperCount < 30) {
+		fTime += deltaTime;
+
+		if ((uint)fTime == 5) {
+			for (int i = 0; i < 5; i++) {
+				m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
+				m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, ((float)creeperCount), 0.0f)));
+				creeperCount++;
+			}
+			fTime = m_pSystem->GetDeltaTime(uClock);
+		}
+	}
 
 	/* Set the updated model matrices for Steve and the Creepers here */
 	for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++)
@@ -152,13 +162,8 @@ void Application::Update(void)
 		//Creeper
 		if (m_pEntityMngr->GetUniqueID(i).find("Creeper") != std::string::npos)
 		{
-			//Get the creeper and player entity
+			//Get the creeper entity
 			MyEntity* creeper = m_pEntityMngr->GetEntity(i);
-			MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
-
-			//Get the player's and the creeper's position
-			vector3 creeperPos = creeper->GetPos();
-			vector3 playerPos = player->GetPos();
 
 			//Creeper is stunned
 			if (creeper->GetWaitTime() > 0.0f)
@@ -167,7 +172,7 @@ void Application::Update(void)
 				float waitTime = creeper->GetWaitTime();
 
 				//Decrease it by delta time
-				//waitTime -=
+				waitTime -= deltaTime;
 
 				//Clamp the wait time
 				if (waitTime <= 0.0f)
@@ -182,6 +187,10 @@ void Application::Update(void)
 			//Creeper not stunned
 			else
 			{
+				//Get the player entity
+
+				//Get the player's and the creeper's position
+
 				//Get vector from the creeper to the player
 
 				//Normalize the vector
@@ -189,9 +198,10 @@ void Application::Update(void)
 				//Set vector as the creeper's new forward
 
 				//Add the creeper's forward to the creeper's position
-			}
 
-			//Set the model matrix of the creeper to translate to its new position
+				//Set the model matrix of the creeper to translate to its new position
+
+			}
 		}
 
 		//Player
@@ -201,12 +211,9 @@ void Application::Update(void)
 			MyEntity* player = m_pEntityMngr->GetEntity(i);
 
 			//Get the translation and rotation matrices
-			//matrix4 translation = glm::translate(player->GetPos());
-			//matrix4 rotation = ToMatrix4();
-			//matrix4 m4Model = translation * rotation;
-
-			//Get translation matrix
-			matrix4 m4Model = glm::translate(player->GetPos());
+			matrix4 translation = glm::translate(player->GetPos());
+			matrix4 rotation = ToMatrix4(player->GetRotation());
+			matrix4 m4Model = translation * rotation;
 
 			//Set the model matrix
 			m_pEntityMngr->SetModelMatrix(m4Model, i);
@@ -232,24 +239,23 @@ void Application::Update(void)
 			m_pEntityMngr->SetModelMatrix(glm::translate(bulletPos), i);
 
 			//Decrease the bullet's life time
-			
+			bullet->DecreaseLifeTime(deltaTime);
+
 			//Check if the bullet needs to be deleted
 			if (bullet->GetLifeTime() <= 0)
 			{
 				bullet->MarkToDelete();
 			}
 		}
-
 	}
-	//m_pEntityMngr->SetModelMatrix(glm::translate(m_v3Creeper) * ToMatrix4(m_qArcBall), "Creeper");
-	//MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-	//m_pEntityMngr->SetModelMatrix(glm::translate(player->GetPos()), "Creeper");
-	//--
-	//--
-	//--
 
 	//Update Entity Manager
-	m_pEntityMngr->Update();
+	//m_pEntityMngr->Update();
+
+	//Set the camera's position, target, and up vectors
+	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+	vector3 offset = player->GetPos() + vector3(0.0f, 1.6f, 0.0f);
+	m_pCameraMngr->SetPositionTargetAndUp(offset, offset + player->GetForward(), player->GetUp());
 
 	//Add objects to render list
 	m_pEntityMngr->AddEntityToRenderList(-1, true);
