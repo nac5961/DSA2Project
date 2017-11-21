@@ -401,11 +401,9 @@ void Application::CameraRotation(float a_fSpeed)
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
 	//Change the Yaw and the Pitch of the camera
-	//m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
-	//m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
+	m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
+	m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
-
-	/* Write the rotation code here */
 }
 //Keyboard
 void Application::ProcessKeyboard(void)
@@ -425,83 +423,17 @@ void Application::ProcessKeyboard(void)
 	if (bMultiplier)
 		fMultiplier = 5.0f;
 
-	float speed = 0.1f;
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::S) && sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::S) && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		speed = speed / 1.5f;
-	}
-
-	//Move forward
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
-		//Get the entity for the player
-		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+		m_pCameraMngr->MoveForward(m_fMovementSpeed * fMultiplier);
 
-		//Get the player's position and forward vector
-		vector3 playerPos = player->GetPos();
-		vector3 playerForward = player->GetForward();
-
-		//Add the forward to the position
-		playerPos += playerForward * speed;
-
-		//Set the player's new position
-		player->SetPos(playerPos);
-	}
-
-	//Move backward
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		//Get the entity for the player
-		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+		m_pCameraMngr->MoveForward(-m_fMovementSpeed * fMultiplier);
 
-		//Get the player's position and forward vector
-		vector3 playerPos = player->GetPos();
-		vector3 playerForward = player->GetForward();
-
-		//Subtract the forward from the position
-		playerPos -= playerForward * speed;
-
-		//Set the player's new position
-		player->SetPos(playerPos);
-	}
-
-	//Move left
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		//Get the entity for the player
-		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+		m_pCameraMngr->MoveSideways(-m_fMovementSpeed * fMultiplier);
 
-		//Get the player's position and right vector
-		vector3 playerPos = player->GetPos();
-		vector3 playerRight = player->GetRight();
-
-		//Add the right to the position
-		playerPos += playerRight * speed;
-
-		//Set the player's new position
-		player->SetPos(playerPos);
-	}
-
-	//Move right
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		//Get the entity for the player
-		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
-
-		//Get the player's position and right vector
-		vector3 playerPos = player->GetPos();
-		vector3 playerRight = player->GetRight();
-
-		//Subtract the right from the position
-		playerPos -= playerRight * speed;
-
-		//Set the player's new position
-		player->SetPos(playerPos);
-	}
+		m_pCameraMngr->MoveSideways(m_fMovementSpeed * fMultiplier);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 		m_pCameraMngr->MoveVertical(-m_fMovementSpeed * fMultiplier);

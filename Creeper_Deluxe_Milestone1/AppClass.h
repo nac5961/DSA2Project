@@ -18,6 +18,8 @@ namespace Simplex
 class Application
 {
 	bool m_bDebug = false; //debug mode
+	int m_iNumLives = 3; //lives left
+	int m_iNumKilled = 0; //creepers killed
 
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
 	vector3 m_v3Creeper; //position of the creeper

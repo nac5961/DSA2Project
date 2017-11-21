@@ -13,18 +13,6 @@ namespace Simplex
 //System Class
 class MyEntity
 {
-	bool canDelete = false; //for bullets and creepers
-
-	float lifeTime = 4.0f; //for bullets
-	float waitTime = 0.0f; //for creepers
-
-	//for all entities
-	vector3 pos = ZERO_V3;
-	vector3 forward = AXIS_Z;
-	vector3 up = AXIS_Y;
-	vector3 right = AXIS_X;
-	quaternion rotation;
-
 	bool m_bInMemory = false; //loaded flag
 	bool m_bSetAxis = false; //render axis flag
 	String m_sUniqueID = ""; //Unique identifier name
@@ -38,32 +26,6 @@ class MyEntity
 	static std::map<String, MyEntity*> m_IDMap; //a map of the unique ID's
 
 public:
-	/* Getters and Setters */
-	void MarkToDelete() { canDelete = true; }
-	bool GetCanDelete() { return canDelete; }
-
-	void DecreaseLifeTime(float a_fTime) { lifeTime -= a_fTime; }
-	float GetLifeTime() { return lifeTime; }
-
-	void ResetWaitTime() { waitTime = 3.0f; }
-	void SetWaitTime(float a_fTime) { waitTime = a_fTime; }
-	float GetWaitTime() { return waitTime; }
-
-	void SetRotation(quaternion a_qRotation) { rotation = a_qRotation; }
-	quaternion GetRotation() { return rotation; }
-
-	void SetPos(vector3 a_v3Pos) { pos = a_v3Pos; }
-	vector3 GetPos() { return pos; }
-
-	void SetRight(vector3 a_v3Pos) { right = a_v3Pos; }
-	vector3 GetRight() { return right; }
-
-	void SetUp(vector3 a_v3Pos) { up = a_v3Pos; }
-	vector3 GetUp() { return up; }
-
-	void SetForward(vector3 a_v3Pos) { forward = a_v3Pos; }
-	vector3 GetForward() { return forward; }
-
 	/*
 	Usage: Constructor that specifies the name attached to the Entity
 	Arguments:
