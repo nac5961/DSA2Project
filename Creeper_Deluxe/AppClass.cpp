@@ -94,11 +94,16 @@ void Application::InitVariables(void)
 
 	//Player (Steve)
 	m_pEntityMngr->AddEntity("Custom\\Steve.fbx", "Steve");
-	m_pEntityMngr->GetModel("Steve")->SetModelMatrix(glm::translate(m_pCameraMngr->GetPosition()));
 	
-	//Creeper
+	//Creeper (Preload to avoid texture bug)
 	m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(-2.0f, 0.0f, 0.0f)), "Creeper"); //Start Creeper slightly to the left
+	m_pEntityMngr->SetModelMatrix(glm::translate(0.0f, 40.0f, 0.0f), -1);
+	m_pEntityMngr->GetEntity(-1)->MarkToDelete(); //delete immediately
+
+	//Bullet (Preload to avoid texture bug)
+	m_pEntityMngr->AddEntity("Custom\\Bullet.fbx", "Bullet");
+	m_pEntityMngr->SetModelMatrix(glm::translate(0.0f, 40.0f, 0.0f), -1);
+	m_pEntityMngr->GetEntity(-1)->MarkToDelete(); //delete immediately
 
 	//Mob Spawners
 	for (int i = 1; i <= 4; i++)
@@ -282,7 +287,7 @@ void Application::Update(void)
 			vector3 bulletForward = bullet->GetForward();
 
 			//Move the bullet along the forward vector
-			bulletPos += bulletForward * 0.1f;
+			bulletPos += bulletForward * 0.5f;
 
 			//Set the bullet's new position
 			bullet->SetPos(bulletPos);

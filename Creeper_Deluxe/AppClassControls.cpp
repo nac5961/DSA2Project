@@ -15,11 +15,31 @@ void Application::ProcessMouseMovement(sf::Event a_event)
 }
 void Application::ProcessMousePressed(sf::Event a_event)
 {
+	MyEntity* bullet = nullptr;
+	MyEntity* player = nullptr;
+
 	switch (a_event.mouseButton.button)
 	{
 	default: break;
 	case sf::Mouse::Button::Left:
 		gui.m_bMousePressed[0] = true;
+
+		//Create the bullet entity
+		m_pEntityMngr->AddEntity("Custom\\Bullet.fbx", "Bullet");
+
+		//Get the bullet and player entity
+		bullet = m_pEntityMngr->GetEntity(-1);
+		player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+
+		//Set the bullet position to the player's position with an offset for the gun
+		bullet->SetPos(player->GetPos() + vector3(ToMatrix4(player->GetRotation()) * vector4(-0.3f, 1.5f, 1.0f, 1.0f)));
+
+		//Set the bullet's forward to the player's forward
+		bullet->SetForward(player->GetForward());
+
+		//Set the bullet's model matrix
+		m_pEntityMngr->SetModelMatrix(glm::translate(bullet->GetPos()), -1);
+
 		break;
 	case sf::Mouse::Button::Middle:
 		gui.m_bMousePressed[1] = true;
