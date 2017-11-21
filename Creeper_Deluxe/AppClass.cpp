@@ -250,7 +250,7 @@ void Application::Update(void)
 	}
 
 	//Update Entity Manager
-	m_pEntityMngr->Update();
+	//m_pEntityMngr->Update();
 
 	//Set the camera's position, target, and up vectors
 	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
