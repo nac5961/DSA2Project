@@ -173,7 +173,7 @@ void Application::Update(void)
 	// Generates Creepers
 	// Creates 5 every five sentences
 	// For this version, they begin spawning at the beginning of the world and move creeperCount units forward (just so we can see and make sure it works right)
-	if (creeperCount < 30) {
+	if (creeperCount < 200) {
 		fTime += deltaTime;
 
 		if ((uint)fTime == 5) {
@@ -189,9 +189,11 @@ void Application::Update(void)
 	/* Set the updated model matrices for Steve and the Creepers here */
 	for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++)
 	{
+		//Get the entity type
+		char entity = m_pEntityMngr->GetUniqueID(i)[0];
+
 		//Ignore walls, the ground, and mob spawners
-		if (m_pEntityMngr->GetUniqueID(i).find("Wall") != std::string::npos || m_pEntityMngr->GetUniqueID(i).find("Ground") != std::string::npos
-			|| m_pEntityMngr->GetUniqueID(i).find("Mob Spawner") != std::string::npos)
+		if (entity == 'W' || entity == 'G' || entity == 'M')
 		{
 			continue;
 		}
@@ -210,7 +212,7 @@ void Application::Update(void)
 		}
 
 		//Creeper
-		if (m_pEntityMngr->GetUniqueID(i).find("Creeper") != std::string::npos)
+		if (entity == 'C')
 		{
 			//Get the creeper entity
 			MyEntity* creeper = m_pEntityMngr->GetEntity(i);
@@ -255,7 +257,7 @@ void Application::Update(void)
 		}
 
 		//Player
-		else if (m_pEntityMngr->GetUniqueID(i).find("Steve") != std::string::npos)
+		else if (entity == 'S')
 		{
 			//Get the player entity
 			MyEntity* player = m_pEntityMngr->GetEntity(i);
@@ -270,7 +272,7 @@ void Application::Update(void)
 		}
 
 		//Bullet
-		else if (m_pEntityMngr->GetUniqueID(i).find("Bullet") != std::string::npos)
+		else if (entity == 'B')
 		{
 			//Get the bullet entity
 			MyEntity* bullet = m_pEntityMngr->GetEntity(i);

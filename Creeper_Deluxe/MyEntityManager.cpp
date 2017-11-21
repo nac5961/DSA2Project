@@ -177,6 +177,7 @@ void Simplex::MyEntityManager::Update(void)
 	}
 	*/
 
+	
 	//check collisions
 	for (uint i = 0; i < m_uEntityCount; i++)
 	{
@@ -185,6 +186,7 @@ void Simplex::MyEntityManager::Update(void)
 			m_entityList[i]->IsColliding(m_entityList[j]);
 		}
 	}
+	
 
 	/*
 	//check collisions
@@ -289,6 +291,157 @@ void Simplex::MyEntityManager::Update(void)
 
 				//Check collisions with creepers
 				else if (m_entityList[j]->GetUniqueID().find("Creeper") != std::string::npos)
+				{
+					if (m_entityList[i]->IsColliding(m_entityList[j]))
+					{
+						//Get the creeper's entity
+						MyEntity* creeper = m_entityList[j];
+
+						//Only damage the player if the creeper isn't stunned
+						//Note: creepers are stunned once they damage the player to avoid
+						//dealing constant damage
+						if (creeper->GetWaitTime() <= 0.0f)
+						{
+							//Decrease the player's # of lives
+							numLives--;
+						}
+
+						//Check if the game is over
+						if (numLives <= 0)
+						{
+							gameOver = true;
+						}
+
+						//Perform calculations if the game isn't over
+						if (!gameOver)
+						{
+							//Stop the creeper from moving
+							if (creeper->GetWaitTime() <= 0.0f)
+							{
+								creeper->ResetWaitTime();
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	*/
+
+	/*
+	//check collisions
+	for (uint i = 0; i < m_uEntityCount; i++)
+	{
+		//Don't perform any calculations if the game is over
+		if (gameOver)
+		{
+			break;
+		}
+
+		//Get the entity type
+		char entity = m_entityList[i]->GetUniqueID()[0];
+
+		//Ignore checking collisions for the ground, walls, mob spawners, and bullets
+		if (entity == 'G' || entity == 'W' || entity == 'M' || entity == 'B')
+		{
+			continue;
+		}
+
+		for (uint j = 0; j < m_uEntityCount; j++)
+		{
+			//Don't perform any more calculations if the game is over
+			if (gameOver)
+			{
+				break;
+			}
+
+			//Get the entity type for the second entity
+			char otherEntity = m_entityList[j]->GetUniqueID()[0];
+
+			//Ignore collisions with self
+			if (i == j)
+			{
+				continue;
+			}
+
+			//Collisions for creepers
+			if (entity == 'C')
+			{
+				//Check collisions with walls
+				if (otherEntity == 'W')
+				{
+					if (m_entityList[i]->IsColliding(m_entityList[j]))
+					{
+						//Get the entity for the wall and the creeper
+						MyEntity* creeper = m_entityList[i];
+						MyEntity* wall = m_entityList[j];
+
+						//Get the position of the creeper
+						vector3 creeperPos = creeper->GetPos();
+
+						//Get the forward of the wall
+						vector3 wallForward = wall->GetForward();
+
+						//Move creeper back according to the wall's forward
+						creeperPos += wallForward * 0.1f;
+
+						//Set the creeper's new position
+						creeper->SetPos(creeperPos);
+
+						//Set the creeper's model matrix
+						creeper->SetModelMatrix(glm::translate(creeperPos));
+					}
+				}
+
+				//Check collisions with bullet
+				else if (otherEntity == 'B')
+				{
+					if (m_entityList[i]->IsColliding(m_entityList[j]))
+					{
+						if (m_entityList[i]->GetCanDelete() == false && m_entityList[j]->GetCanDelete() == false)
+						{
+							//Mark the bullet and the creeper for deletion
+							m_entityList[i]->MarkToDelete();
+							m_entityList[j]->MarkToDelete();
+						}
+					}
+				}
+			}
+
+			//Collisions for the player (Steve)
+			else if (entity == 'S')
+			{
+				//Check collisions with walls
+				if (otherEntity == 'W')
+				{
+					if (m_entityList[i]->IsColliding(m_entityList[j]))
+					{
+						//Get the entity for the wall and the player
+						MyEntity* player = m_entityList[i];
+						MyEntity* wall = m_entityList[j];
+
+						//Get the position of the player
+						vector3 playerPos = player->GetPos();
+
+						//Get the forward of the wall
+						vector3 wallForward = wall->GetForward();
+
+						//Move player back according to the wall's forward
+						playerPos += wallForward * 0.1f;
+
+						//Set the player's new position
+						player->SetPos(playerPos);
+
+						//Set the player's model matrix
+						matrix4 translate = glm::translate(playerPos);
+						matrix4 rotation = ToMatrix4(player->GetRotation());
+						matrix4 m4Model = translate * rotation;
+						player->SetModelMatrix(m4Model);
+					}
+				}
+
+				//Check collisions with creepers
+				else if (otherEntity == 'C')
 				{
 					if (m_entityList[i]->IsColliding(m_entityList[j]))
 					{
