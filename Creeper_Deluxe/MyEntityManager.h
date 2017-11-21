@@ -13,13 +13,19 @@ namespace Simplex
 //System Class
 class MyEntityManager
 {
-	float numLives = 3;
+	int numLives = 3;
+	int numKilled = 0;
 	bool gameOver = false;
 
 	uint m_uEntityCount = 0; //number of elements in the list
 	static MyEntityManager* m_pInstance; // Singleton pointer
 	std::vector<MyEntity*> m_entityList; //entities list
 public:
+	int GetNumLives() { return numLives; }
+
+	void SetNumKilled(int a_fNum) { numKilled = a_fNum; }
+	int GetNumKilled() { return numKilled; }
+
 	uint GetEntityCount() { return m_uEntityCount; }
 	/*
 	Usage: Gets the singleton pointer
