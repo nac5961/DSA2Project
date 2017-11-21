@@ -114,10 +114,10 @@ void Application::Update(void)
 	//Is the first person camera active?
 	CameraRotation();
 
+	/*
 	// Generates Creepers
 	// Creates 5 every five sentences
 	// For this version, they begin spawning at the beginning of the world and move creeperCount units forward (just so we can see and make sure it works right)
-	/*
 	static short creeperCount = 0;
 	static float time = 0;
 	static uint clock = m_pSystem->GenClock();
@@ -127,7 +127,7 @@ void Application::Update(void)
 		if ((uint)time == 5) {
 			for (int i = 0; i < 5; i++) {
 				m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-				m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, 0.0f, ((float)creeperCount))));
+				m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, ((float)creeperCount), 0.0f)));
 				creeperCount++;
 			}
 			time = m_pSystem->GetDeltaTime(clock);
@@ -211,7 +211,7 @@ void Application::Update(void)
 
 			//Get the translation and rotation matrices
 			matrix4 translation = glm::translate(player->GetPos());
-			matrix4 rotation;
+			matrix4 rotation = ToMatrix4(player->GetRotation());
 			matrix4 m4Model = translation * rotation;
 
 			//Get translation matrix
@@ -248,8 +248,9 @@ void Application::Update(void)
 				bullet->MarkToDelete();
 			}
 		}
-
 	}
+
+	
 	//m_pEntityMngr->GetModel("Steve")->SetModelMatrix(m_pCameraMngr->GetCamera()->GetViewMatrix() * glm::translate(m_pCameraMngr->GetPosition() - vector3(0.0f, 1.7f, 1.0f)));
 	//m_pEntityMngr->GetModel("Steve")->SetModelMatrix(glm::translate(m_pCameraMngr->GetPosition() - vector3(0.0f, 1.7f, 0.0f)) *
 													// glm::inverse(glm::extractMatrixRotation(m_pCameraMngr->GetCamera()->GetViewMatrix())) * 
@@ -261,6 +262,11 @@ void Application::Update(void)
 
 	//Update Entity Manager
 	m_pEntityMngr->Update();
+
+	//Set the camera's position, target, and up vectors
+	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+	vector3 offset = player->GetPos() + vector3(0.0f, 1.6f, 0.0f); //1.6f  2.0f -2.0f
+	m_pCameraMngr->SetPositionTargetAndUp(offset, offset + player->GetForward(), player->GetUp());
 
 	//Add objects to render list
 	m_pEntityMngr->AddEntityToRenderList(-1, true);

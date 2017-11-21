@@ -401,9 +401,27 @@ void Application::CameraRotation(float a_fSpeed)
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
 	//Change the Yaw and the Pitch of the camera
-	m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
-	m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
+	//m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
+	//m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
+
+	//Get the player entity
+	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+
+	//Get the forward and right vectors
+	vector3 playerForward = player->GetForward();
+	vector3 playerRight = player->GetRight();
+	quaternion playerRotation = player->GetRotation();
+
+	//Rotate by the fAngleY only
+	playerRotation = playerRotation * glm::angleAxis(fAngleY * 3.0f, AXIS_Y);
+	playerForward = vector3(ToMatrix4(glm::angleAxis(fAngleY * 3.0f, AXIS_Y)) * vector4(playerForward, 0.0f));//vector3(glm::rotate(IDENTITY_M4, fAngleY, AXIS_Y) * vector4(playerForward, 0.0f));
+	playerRight = vector3(ToMatrix4(glm::angleAxis(fAngleY * 3.0f, AXIS_Y)) * vector4(playerRight, 0.0f));//vector3(glm::rotate(IDENTITY_M4, fAngleY, AXIS_Y) * vector4(playerRight, 0.0f));
+
+	//Set the updated forward and right vectors
+	player->SetForward(playerForward);
+	player->SetRight(playerRight);
+	player->SetRotation(playerRotation);
 }
 //Keyboard
 void Application::ProcessKeyboard(void)
@@ -423,6 +441,16 @@ void Application::ProcessKeyboard(void)
 	if (bMultiplier)
 		fMultiplier = 5.0f;
 
+	float speed = 0.1f;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::S) && sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::S) && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		speed = speed / 1.5f;
+	}
+
 	//Move forward
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
@@ -434,14 +462,10 @@ void Application::ProcessKeyboard(void)
 		vector3 playerForward = player->GetForward();
 
 		//Add the forward to the position
-		playerPos += playerForward * 0.1f;
+		playerPos += playerForward * speed;
 
 		//Set the player's new position
 		player->SetPos(playerPos);
-
-		//Set the camera's position, target, and up vectors
-		vector3 offset = playerPos + vector3(0.0f, 1.6f, 0.0f);
-		m_pCameraMngr->SetPositionTargetAndUp(offset, offset + playerForward, player->GetUp());
 	}
 
 	//Move backward
@@ -455,14 +479,10 @@ void Application::ProcessKeyboard(void)
 		vector3 playerForward = player->GetForward();
 
 		//Subtract the forward from the position
-		playerPos -= playerForward * 0.1f;
+		playerPos -= playerForward * speed;
 
 		//Set the player's new position
 		player->SetPos(playerPos);
-
-		//Set the camera's position, target, and up vectors
-		vector3 offset = playerPos + vector3(0.0f, 1.6f, 0.0f);
-		m_pCameraMngr->SetPositionTargetAndUp(offset, offset + playerForward, player->GetUp());
 	}
 
 	//Move left
@@ -474,17 +494,12 @@ void Application::ProcessKeyboard(void)
 		//Get the player's position and right vector
 		vector3 playerPos = player->GetPos();
 		vector3 playerRight = player->GetRight();
-		vector3 playerForward = player->GetForward(); //used for camera
 
 		//Add the right to the position
-		playerPos += playerRight * 0.1f;
+		playerPos += playerRight * speed;
 
 		//Set the player's new position
 		player->SetPos(playerPos);
-
-		//Set the camera's position, target, and up vectors
-		vector3 offset = playerPos + vector3(0.0f, 1.6f, 0.0f);
-		m_pCameraMngr->SetPositionTargetAndUp(offset, offset + playerForward, player->GetUp());
 	}
 
 	//Move right
@@ -496,17 +511,12 @@ void Application::ProcessKeyboard(void)
 		//Get the player's position and right vector
 		vector3 playerPos = player->GetPos();
 		vector3 playerRight = player->GetRight();
-		vector3 playerForward = player->GetForward(); //used for camera
 
 		//Subtract the right from the position
-		playerPos -= playerRight * 0.1f;
+		playerPos -= playerRight * speed;
 
 		//Set the player's new position
 		player->SetPos(playerPos);
-
-		//Set the camera's position, target, and up vectors
-		vector3 offset = playerPos + vector3(0.0f, 1.6f, 0.0f);
-		m_pCameraMngr->SetPositionTargetAndUp(offset, offset + playerForward, player->GetUp());
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))

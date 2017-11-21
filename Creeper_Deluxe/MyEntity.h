@@ -23,6 +23,7 @@ class MyEntity
 	vector3 forward = AXIS_Z;
 	vector3 up = AXIS_Y;
 	vector3 right = AXIS_X;
+	quaternion rotation;
 
 	bool m_bInMemory = false; //loaded flag
 	bool m_bSetAxis = false; //render axis flag
@@ -47,6 +48,9 @@ public:
 	void ResetWaitTime() { waitTime = 3.0f; }
 	void SetWaitTime(float a_fTime) { waitTime = a_fTime; }
 	float GetWaitTime() { return waitTime; }
+
+	void SetRotation(quaternion a_qRotation) { rotation = a_qRotation; }
+	quaternion GetRotation() { return rotation; }
 
 	void SetPos(vector3 a_v3Pos) { pos = a_v3Pos; }
 	vector3 GetPos() { return pos; }

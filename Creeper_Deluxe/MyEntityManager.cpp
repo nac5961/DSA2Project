@@ -259,7 +259,10 @@ void Simplex::MyEntityManager::Update(void)
 						player->SetPos(playerPos);
 
 						//Set the player's model matrix
-						player->SetModelMatrix(glm::translate(playerPos));
+						matrix4 translate = glm::translate(playerPos);
+						matrix4 rotation = ToMatrix4(player->GetRotation());
+						matrix4 m4Model = translate * rotation;
+						player->SetModelMatrix(m4Model);
 					}
 				}
 
