@@ -249,26 +249,6 @@ void Application::Update(void)
 		}
 	}
 
-	// Generates Creepers
-	// Creates 5 every five sentences
-	// For this version, they begin spawning at the beginning of the world and move creeperCount units forward (just so we can see and make sure it works right)
-	static short creeperCount = 0;
-	static float time = 0;
-	static uint clock = m_pSystem->GenClock();
-	if (creeperCount < 30) {
-		time += m_pSystem->GetDeltaTime(clock);
-
-		if ((uint)time == 5) {
-			for (int i = 0; i < 5; i++) {
-				m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-				m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, 0.0f, ((float)creeperCount))));
-				creeperCount++;
-			}
-			time = m_pSystem->GetDeltaTime(clock);
-		}
-	}
-	
-
 	//Update Entity Manager
 	//m_pEntityMngr->Update();
 
