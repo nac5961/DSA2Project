@@ -15,11 +15,31 @@ void Application::ProcessMouseMovement(sf::Event a_event)
 }
 void Application::ProcessMousePressed(sf::Event a_event)
 {
+	MyEntity* bullet = nullptr;
+	MyEntity* player = nullptr;
+
 	switch (a_event.mouseButton.button)
 	{
 	default: break;
 	case sf::Mouse::Button::Left:
 		gui.m_bMousePressed[0] = true;
+
+		//Create the bullet entity
+		m_pEntityMngr->AddEntity("Custom\\Bullet.fbx", "Bullet");
+
+		//Get the bullet and player entity
+		bullet = m_pEntityMngr->GetEntity(-1);
+		player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+
+		//Set the bullet position to the player's position with an offset for the gun
+		bullet->SetPos(player->GetPos() + vector3(ToMatrix4(player->GetRotation()) * vector4(-0.3f, 1.45f, 1.0f, 1.0f)));
+
+		//Set the bullet's forward to the player's forward
+		bullet->SetForward(player->GetForward());
+
+		//Set the bullet's model matrix
+		m_pEntityMngr->SetModelMatrix(glm::translate(bullet->GetPos()), -1);
+
 		break;
 	case sf::Mouse::Button::Middle:
 		gui.m_bMousePressed[1] = true;
@@ -405,7 +425,23 @@ void Application::CameraRotation(float a_fSpeed)
 	//m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 
-	/* Write the rotation code here */
+	//Get the player entity
+	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+
+	//Get the forward and right vectors
+	vector3 playerForward = player->GetForward();
+	vector3 playerRight = player->GetRight();
+	quaternion playerRotation = player->GetRotation();
+
+	//Rotate by the fAngleY only
+	playerRotation = playerRotation * glm::angleAxis(fAngleY * 3.0f, AXIS_Y);
+	playerForward = vector3(ToMatrix4(glm::angleAxis(fAngleY * 3.0f, AXIS_Y)) * vector4(playerForward, 0.0f));//vector3(glm::rotate(IDENTITY_M4, fAngleY, AXIS_Y) * vector4(playerForward, 0.0f));
+	playerRight = vector3(ToMatrix4(glm::angleAxis(fAngleY * 3.0f, AXIS_Y)) * vector4(playerRight, 0.0f));//vector3(glm::rotate(IDENTITY_M4, fAngleY, AXIS_Y) * vector4(playerRight, 0.0f));
+
+	//Set the updated forward and right vectors
+	player->SetForward(playerForward);
+	player->SetRight(playerRight);
+	player->SetRotation(playerRotation);
 }
 //Keyboard
 void Application::ProcessKeyboard(void)
@@ -511,109 +547,25 @@ void Application::ProcessKeyboard(void)
 #pragma endregion
 	//move the creeper
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		//Get the player entity
-		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-
-		//Get the position and right vector of the player
-		vector3 pos = player->GetPos();
-		vector3 right = player->GetRight();
-
-		//Move left
-		pos -= right * 0.1f;
-
-		//Set new position
-		player->SetPos(pos);
-	}
+		m_v3Creeper.x -= 0.1f;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		//Get the player entity
-		MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-
-		//Get the position and right vector of the player
-		vector3 pos = player->GetPos();
-		vector3 right = player->GetRight();
-
-		//Move left
-		pos += right * 0.1f;
-
-		//Set new position
-		player->SetPos(pos);
-	}
+		m_v3Creeper.x += 0.1f;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
 		if (m_bModifier)
-		{
-			//Get the player entity
-			MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-
-			//Get the position and forward vector of the player
-			vector3 pos = player->GetPos();
-			vector3 forward = player->GetForward();
-
-			//Move forward
-			pos += forward * 0.1f;
-
-			//Set new position
-			player->SetPos(pos);
-		}
+			m_v3Creeper.z -= 0.1f;
 		else
-		{
-			//Get the player entity
-			MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-
-			//Mark that the player is moving in the positive direction
-			//player->SetMovement(true);
-
-			//Get the position and up vector of the player
-			vector3 pos = player->GetPos();
-			vector3 up = player->GetUp();
-
-			//Move up
-			pos += up * 0.1f;
-
-			//Set new position
-			player->SetPos(pos);
-		}
+			m_v3Creeper.y += 0.1f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
 		if (m_bModifier)
-		{
-			//Get the player entity
-			MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-
-			//Get the position and forward vector of the player
-			vector3 pos = player->GetPos();
-			vector3 forward = player->GetForward();
-
-			//Move backward
-			pos -= forward * 0.1f;
-
-			//Set new position
-			player->SetPos(pos);
-		}
+			m_v3Creeper.z += 0.1f;
 		else
-		{
-			//Get the player entity
-			MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Creeper"));
-
-			//Mark that the player is moving in the negative direction
-			//player->SetMovement(false);
-
-			//Get the position and up vector of the player
-			vector3 pos = player->GetPos();
-			vector3 up = player->GetUp();
-
-			//Move down
-			pos -= up * 0.1f;
-
-			//Set new position
-			player->SetPos(pos);
-		}
+			m_v3Creeper.y -= 0.1f;
 	}
 
 	//Orient the creeper
