@@ -101,7 +101,57 @@ void Application::InitVariables(void)
 	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(-2.0f, 0.0f, 0.0f)), "Creeper"); //Start Creeper slightly to the left
 
 	//Mob Spawners
-	m_pEntityMngr->AddEntity("Custom\\Mob Spawner.fbx", "Mob Spawner");
+	for (int i = 1; i <= 4; i++)
+	{
+		float offset = 6.0f;
+		float x = xOffset;
+		float z = zOffset;
+
+		if (i % 2 == 0)
+		{
+			//Position on opposite side
+			if (i == 4)
+			{
+				z = -z;
+				x = -x;
+				offset = -offset;
+			}
+
+			//Create entity
+			m_pEntityMngr->AddEntity("Custom\\Mob Spawner.fbx", "Mob Spawner" + std::to_string(i));
+
+			//Get entity
+			MyEntity* mobSpawner = m_pEntityMngr->GetEntity(-1);
+
+			//Set position
+			mobSpawner->SetPos(vector3(x - offset, 0.0f, -z + offset));
+
+			//Set model matrix
+			mobSpawner->SetModelMatrix(glm::translate(mobSpawner->GetPos()));
+		}
+		else
+		{
+			//Position on opposite side
+			if (i == 3)
+			{
+				z = -z;
+				x = -x;
+				offset = -offset;
+			}
+
+			//Create entity
+			m_pEntityMngr->AddEntity("Custom\\Mob Spawner.fbx", "Mob Spawner" + std::to_string(i));
+
+			//Get entity
+			MyEntity* mobSpawner = m_pEntityMngr->GetEntity(-1);
+
+			//Set position
+			mobSpawner->SetPos(vector3(x - offset, 0.0f, z - offset));
+
+			//Set model matrix
+			mobSpawner->SetModelMatrix(glm::translate(mobSpawner->GetPos()));
+		}
+	}
 }
 void Application::Update(void)
 {
