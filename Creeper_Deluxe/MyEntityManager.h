@@ -13,6 +13,9 @@ namespace Simplex
 //System Class
 class MyEntityManager
 {
+	float numLives = 3;
+	bool gameOver = false;
+
 	uint m_uEntityCount = 0; //number of elements in the list
 	static MyEntityManager* m_pInstance; // Singleton pointer
 	std::vector<MyEntity*> m_entityList; //entities list
