@@ -404,6 +404,8 @@ void Application::CameraRotation(float a_fSpeed)
 	//m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
 	//m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
+
+	/* Write the rotation code here */
 }
 //Keyboard
 void Application::ProcessKeyboard(void)
