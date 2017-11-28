@@ -175,12 +175,14 @@ void Application::Update(void)
 	// For this version, they begin spawning at the beginning of the world and move creeperCount units forward (just so we can see and make sure it works right)
 	if (creeperCount < 30) {
 		fTime += deltaTime;
+		std::cout << fTime << std::endl;
 
-		if ((uint)fTime == 5) {
+		if ((uint)fTime >= 5) {
 			for (int i = 0; i < 5; i++) {
 				m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
 				m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, ((float)creeperCount), 0.0f)));
 				creeperCount++;
+				printf("creeper made");
 			}
 			fTime = m_pSystem->GetDeltaTime(uClock);
 		}
@@ -237,20 +239,34 @@ void Application::Update(void)
 			//Creeper not stunned
 			else
 			{
+				/*
 				//Get the player entity
+				MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
 
 				//Get the player's and the creeper's position
+				vector3 playerPos = player->GetPos();
+				vector3 creeperPos = creeper->GetPos();
 
 				//Get vector from the creeper to the player
+				vector3 creeperToPlayer = playerPos - creeperPos;
 
 				//Normalize the vector
+				float creeperVecMag = sqrtf(pow(creeperToPlayer.x, 2) + pow(creeperToPlayer.y, 2) + pow(creeperToPlayer.z, 2));
+
+				creeperToPlayer.x = creeperToPlayer.x / creeperVecMag;
+				creeperToPlayer.y = creeperToPlayer.y / creeperVecMag;
+				creeperToPlayer.z = creeperToPlayer.z / creeperVecMag;
 
 				//Set vector as the creeper's new forward
+				creeper->SetForward(creeperToPlayer);
 
 				//Add the creeper's forward to the creeper's position
+				vector3 creeperMove = (creeper->GetPos() + creeper->GetForward()) * 0.1f;
+				creeper->SetPos(creeperMove);
 
 				//Set the model matrix of the creeper to translate to its new position
-
+				m_pEntityMngr->SetModelMatrix(glm::translate(creeperMove), i);
+				*/
 			}
 		}
 
