@@ -247,19 +247,32 @@ void Application::Update(void)
 			else
 			{
 				//Get the player entity
+				MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
 
 				//Get the player's and the creeper's position
+				vector3 playerPos = player->GetPos();
+				vector3 creeperPos = creeper->GetPos();
 
 				//Get vector from the creeper to the player
+				vector3 creeperToPlayer = playerPos - creeperPos;
 
 				//Normalize the vector
+				float creeperVecMag = sqrtf(pow(creeperToPlayer.x, 2) + pow(creeperToPlayer.y, 2) + pow(creeperToPlayer.z, 2));
+
+				creeperToPlayer.x = creeperToPlayer.x / creeperVecMag;
+				creeperToPlayer.y = creeperToPlayer.y / creeperVecMag;
+				creeperToPlayer.z = creeperToPlayer.z / creeperVecMag;
 
 				//Set vector as the creeper's new forward
+				creeper->SetForward(creeperToPlayer);
 
 				//Add the creeper's forward to the creeper's position
+				creeperPos += creeper->GetForward() * 0.1f;
+				//vector3 creeperMove = (creeperPos + creeper->GetForward()) * 0.1f;
+				creeper->SetPos(creeperPos);
 
 				//Set the model matrix of the creeper to translate to its new position
-
+				creeper->SetModelMatrix(glm::translate(creeper->GetPos()));
 			}
 		}
 
