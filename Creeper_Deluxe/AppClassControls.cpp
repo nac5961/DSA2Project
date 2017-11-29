@@ -420,10 +420,18 @@ void Application::CameraRotation(float a_fSpeed)
 		fDeltaMouse = static_cast<float>(MouseY - CenterY);
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
-	//Change the Yaw and the Pitch of the camera
-	//m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
-	//m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
+	
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
+
+	//Change the Yaw and the Pitch of the camera
+	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+	m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
+	m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
+	player->SetForward(m_pCameraMngr->GetForward());
+	player->SetRight(m_pCameraMngr->GetRightward() * -1.0f);
+	//player->SetUp(m_pCameraMngr->GetUpward());
+	player->SetRotation(glm::inverse(glm::toQuat(glm::extractMatrixRotation(m_pCameraMngr->GetViewMatrix()))));
+	player->SetModelMatrix(player->GetModelMatrix() * glm::rotate(IDENTITY_M4, 180.0f, AXIS_Y));
 
 }
 //Keyboard
