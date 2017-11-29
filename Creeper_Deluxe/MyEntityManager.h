@@ -26,6 +26,8 @@ public:
 	void SetNumKilled(int a_fNum) { numKilled = a_fNum; }
 	int GetNumKilled() { return numKilled; }
 
+	bool GetGameOver() { return gameOver; }
+
 	uint GetEntityCount() { return m_uEntityCount; }
 	/*
 	Usage: Gets the singleton pointer

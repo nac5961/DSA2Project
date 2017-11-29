@@ -32,7 +32,7 @@ void Application::ProcessMousePressed(sf::Event a_event)
 		player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
 
 		//Set the bullet position to the player's position with an offset for the gun
-		bullet->SetPos(player->GetPos() + vector3(ToMatrix4(player->GetRotation()) * vector4(-0.3f, 1.45f, 1.0f, 1.0f)));
+		bullet->SetPos(player->GetPos() + vector3(ToMatrix4(player->GetRotation()) * vector4(0.3f, 1.45f, -0.75f, 1.0f)));
 
 		//Set the bullet's forward to the player's forward
 		bullet->SetForward(player->GetForward());

@@ -18,6 +18,7 @@ namespace Simplex
 class Application
 {
 	bool m_bDebug = false; //debug mode
+	float spawnRadius = 5.0f;
 
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
 	vector3 m_v3Creeper; //position of the creeper

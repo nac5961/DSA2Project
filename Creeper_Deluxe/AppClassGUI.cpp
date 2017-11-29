@@ -120,31 +120,47 @@ void Application::DrawGUI(void)
 #pragma region Debugging Information
 	uint nEmptyLines = 0;
 
-	//Creeper Deluxe Debug
-	if (m_bDebug)
+	//Not game over
+	if (!m_pEntityMngr->GetGameOver())
 	{
-		nEmptyLines = 17;
+		//Creeper Deluxe Debug
+		if (m_bDebug)
+		{
+			nEmptyLines = 17;
 
-		m_pMeshMngr->PrintLine("  " + m_pSystem->GetAppName(), C_YELLOW);
+			m_pMeshMngr->PrintLine("  " + m_pSystem->GetAppName(), C_YELLOW);
 
-		m_pMeshMngr->Print("  RenderCalls: ");//Add a line on top
-		m_pMeshMngr->PrintLine(std::to_string(m_uRenderCallCount), C_YELLOW);
+			m_pMeshMngr->Print("  RenderCalls: ");//Add a line on top
+			m_pMeshMngr->PrintLine(std::to_string(m_uRenderCallCount), C_YELLOW);
 
-		m_pMeshMngr->Print("  FPS:");
-		m_pMeshMngr->PrintLine(std::to_string(m_pSystem->GetFPS()), C_RED);
+			m_pMeshMngr->Print("  FPS:");
+			m_pMeshMngr->PrintLine(std::to_string(m_pSystem->GetFPS()), C_RED);
+		}
+		else
+		{
+			nEmptyLines = 20;
+		}
+
+		//Print info on the screen
+		for (uint i = 0; i < nEmptyLines; ++i)
+			m_pMeshMngr->PrintLine("");//Add a line on top
+
+		m_pMeshMngr->PrintLine("  Lives: " + std::to_string(m_pEntityMngr->GetNumLives()));
+		m_pMeshMngr->PrintLine("");
+		m_pMeshMngr->PrintLine("  Kill Count: " + std::to_string(m_pEntityMngr->GetNumKilled()));
 	}
+
+	//Is game over
 	else
 	{
-		nEmptyLines = 20;
+		nEmptyLines = 10;
+
+		//Print info on the screen
+		for (uint i = 0; i < nEmptyLines; ++i)
+			m_pMeshMngr->PrintLine("");//Add a line on top
+
+		m_pMeshMngr->PrintLine("						Game Over");
 	}
-
-	//Print info on the screen
-	for (uint i = 0; i < nEmptyLines; ++i)
-		m_pMeshMngr->PrintLine("");//Add a line on top
-
-	m_pMeshMngr->PrintLine("  Lives: " + std::to_string(m_pEntityMngr->GetNumLives()));
-	m_pMeshMngr->PrintLine("");
-	m_pMeshMngr->PrintLine("  Kill Count: " + std::to_string(m_pEntityMngr->GetNumKilled()));
 #pragma endregion
 
 	//Calculate the window size to know how to draw
