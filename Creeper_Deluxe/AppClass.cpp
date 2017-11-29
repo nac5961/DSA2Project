@@ -161,8 +161,6 @@ void Application::Update(void)
 	//Is the ArcBall active?
 	ArcBall();
 
-	//Is the first person camera active?
-	CameraRotation();
 
 	//Statics for creeper generation and delta time
 	static short creeperCount = 0;
@@ -301,7 +299,8 @@ void Application::Update(void)
 
 	//Update Entity Manager
 	//m_pEntityMngr->Update();
-
+	//Is the first person camera active?
+	CameraRotation();
 	//Set the camera's position, target, and up vectors
 	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
 	vector3 offset = player->GetPos() + vector3(0.0f, 1.6f, 0.0f);
