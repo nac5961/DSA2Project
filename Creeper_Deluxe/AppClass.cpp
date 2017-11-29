@@ -190,6 +190,8 @@ void Application::Update(void)
 				MyEntity* creeper = m_pEntityMngr->GetEntity(-1);
 
 				int index = (rand() % 4) + 1;
+				float xOffset = (rand() / (float)RAND_MAX * (spawnRadius * 2)) - spawnRadius;
+				float zOffset = (rand() / (float)RAND_MAX * (spawnRadius * 2)) - spawnRadius;
 				MyEntity* spawn = nullptr;
 				spawn = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Mob Spawner" + std::to_string(index)));
 
@@ -204,7 +206,7 @@ void Application::Update(void)
 						counter++;
 					}
 				}*/
-				creeper->SetPos(spawn->GetPos());
+				creeper->SetPos(spawn->GetPos() + vector3(xOffset, 0.0f, zOffset));
 				creeper->SetModelMatrix(glm::translate(/*vector3(0.0f, 0.0f, ((float)creeperCount))*/  /*spawners[index].GetPos()*/  creeper->GetPos()));
 				creeperCount++;
 				printf("creeper made");
@@ -264,7 +266,7 @@ void Application::Update(void)
 			//Creeper not stunned
 			else
 			{
-				/*
+				
 				//Get the player entity
 				MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
 
@@ -286,12 +288,13 @@ void Application::Update(void)
 				creeper->SetForward(creeperToPlayer);
 
 				//Add the creeper's forward to the creeper's position
-				vector3 creeperMove = (creeper->GetPos() + creeper->GetForward()) * 0.1f;
-				creeper->SetPos(creeperMove);
+				creeperPos += creeper->GetForward() * 0.1f;
+				//vector3 creeperMove = (creeperPos + creeper->GetForward()) * 0.1f;
+				creeper->SetPos(creeperPos);
 
 				//Set the model matrix of the creeper to translate to its new position
-				m_pEntityMngr->SetModelMatrix(glm::translate(creeperMove), i);
-				*/
+				creeper->SetModelMatrix(glm::translate(creeper->GetPos()));
+				
 			}
 		}
 
