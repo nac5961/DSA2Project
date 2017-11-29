@@ -428,7 +428,8 @@ void Application::CameraRotation(float a_fSpeed)
 	//Change the Yaw and the Pitch of the camera
 	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
 	m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
-	m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
+	//m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
+
 	player->SetForward(m_pCameraMngr->GetForward());
 	player->SetRight(m_pCameraMngr->GetRightward() * -1.0f);
 	//player->SetUp(m_pCameraMngr->GetUpward());
