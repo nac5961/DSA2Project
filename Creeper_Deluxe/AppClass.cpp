@@ -8,6 +8,9 @@ void Application::InitVariables(void)
 		vector3(0.0f, 1.0f, 12.0f),	//Target
 		AXIS_Y);					//Up
 
+	//Enable first person mode
+	m_bFPC = true;
+
 	m_pLightMngr->SetPosition(vector3(0.0f, 3.0f, 13.0f), 1); //set the position of first light (0 is reserved for ambient light)
 
 	//Entity Manager
@@ -166,9 +169,6 @@ void Application::Update(void)
 	//Is the ArcBall active?
 	ArcBall();
 
-	//Is the first person camera active?
-	CameraRotation();
-
 	//Statics for creeper generation and delta time
 	static short creeperCount = 0;
 	static float fTime = 0;
@@ -310,6 +310,9 @@ void Application::Update(void)
 
 	//Update Entity Manager
 	m_pEntityMngr->Update();
+
+	//Is the first person camera active?
+	CameraRotation();
 
 	//Set the camera's position, target, and up vectors
 	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));

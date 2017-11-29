@@ -93,6 +93,7 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 	{
 	default: break;
 	case sf::Keyboard::F:
+		/*
 		m_bFPC = !m_bFPC;
 		if (m_bFPC) {
 			//glutSetCursor(GLUT_CURSOR_NONE);
@@ -101,6 +102,7 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 			//glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
 		}
 		break;
+		*/
 	case sf::Keyboard::Space:
 		m_sound.play();
 		break;
@@ -431,6 +433,7 @@ void Application::CameraRotation(float a_fSpeed)
 	player->SetRight(m_pCameraMngr->GetRightward() * -1.0f);
 	//player->SetUp(m_pCameraMngr->GetUpward());
 	player->SetRotation(glm::inverse(glm::toQuat(glm::extractMatrixRotation(m_pCameraMngr->GetViewMatrix()))));
+
 	player->SetModelMatrix(player->GetModelMatrix() * glm::rotate(IDENTITY_M4, 180.0f, AXIS_Y));
 
 }
