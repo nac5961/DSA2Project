@@ -97,8 +97,8 @@ void Application::InitVariables(void)
 	m_pEntityMngr->GetModel("Steve")->SetModelMatrix(glm::translate(m_pCameraMngr->GetPosition()));
 	
 	//Creeper
-	m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(-2.0f, 0.0f, 0.0f)), "Creeper"); //Start Creeper slightly to the left
+	//m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
+	//m_pEntityMngr->SetModelMatrix(glm::translate(vector3(-2.0f, 0.0f, 0.0f)), "Creeper"); //Start Creeper slightly to the left
 
 	//Mob Spawners
 	for (int i = 1; i <= 4; i++)
@@ -128,6 +128,9 @@ void Application::InitVariables(void)
 
 			//Set model matrix
 			mobSpawner->SetModelMatrix(glm::translate(mobSpawner->GetPos()));
+
+			//Add spawner to vector
+			spawners.push_back(*mobSpawner);
 		}
 		else
 		{
@@ -150,6 +153,9 @@ void Application::InitVariables(void)
 
 			//Set model matrix
 			mobSpawner->SetModelMatrix(glm::translate(mobSpawner->GetPos()));
+
+			//Add spawner to vector
+			spawners.push_back(*mobSpawner);
 		}
 	}
 }
@@ -170,6 +176,7 @@ void Application::Update(void)
 	static uint uClock = m_pSystem->GenClock();
 	float deltaTime = m_pSystem->GetDeltaTime(uClock);
 	
+	
 	// Generates Creepers
 	// Creates 5 every five sentences
 	// For this version, they begin spawning at the beginning of the world and move creeperCount units forward (just so we can see and make sure it works right)
@@ -180,7 +187,25 @@ void Application::Update(void)
 		if ((uint)fTime >= 5) {
 			for (int i = 0; i < 5; i++) {
 				m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-				m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, ((float)creeperCount), 0.0f)));
+				MyEntity* creeper = m_pEntityMngr->GetEntity(-1);
+
+				int index = (rand() % 4) + 1;
+				MyEntity* spawn = nullptr;
+				spawn = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Mob Spawner" + std::to_string(index)));
+
+				int counter = 0;
+				/*
+				for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++) {
+					if (m_pEntityMngr->GetUniqueID(i).find("Mob Spawner") != std::string::npos) {
+						if (counter == index) {
+							spawn = m_pEntityMngr->GetEntity(i);
+							break;
+						}
+						counter++;
+					}
+				}*/
+				creeper->SetPos(spawn->GetPos());
+				creeper->SetModelMatrix(glm::translate(/*vector3(0.0f, 0.0f, ((float)creeperCount))*/  /*spawners[index].GetPos()*/  creeper->GetPos()));
 				creeperCount++;
 				printf("creeper made");
 			}

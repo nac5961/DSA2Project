@@ -60,6 +60,9 @@ private:
 	sf::Sound m_sound; //sound effect
 	sf::Music m_soundBGM; //background music
 
+	std::vector<MyEntity> spawners;	//vector of mob spawners
+	float spawnRadius = 5.0f;
+
 public:
 #pragma region Constructor / Run / Destructor
 	/*
