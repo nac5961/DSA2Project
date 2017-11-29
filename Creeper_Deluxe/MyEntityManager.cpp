@@ -165,24 +165,35 @@ MyEntityManager& MyEntityManager::operator=(MyEntityManager const& other) { retu
 MyEntityManager::~MyEntityManager(){Release();};
 // other methods
 void Simplex::MyEntityManager::Update(void)
-{
+{	
 	//check collisions
 	for (uint i = 0; i < m_uEntityCount; i++)
 	{
+		//Don't perform any calculations if the game is over
+		if (gameOver)
+		{
+			break;
+		}
+
+		//Get the entity type
+		char entity = m_entityList[i]->GetUniqueID()[0];
+
+		//Ignore checking collisions for the ground, walls, mob spawners, and bullets
+		if (entity == 'G' || entity == 'W' || entity == 'M' || entity == 'B')
+		{
+			continue;
+		}
+
 		for (uint j = 0; j < m_uEntityCount; j++)
 		{
-			//Don't perform any calculations if the game is over
+			//Don't perform any more calculations if the game is over
 			if (gameOver)
 			{
 				break;
 			}
 
-			//Ignore checking collisions for the ground, walls, mob spawners, and bullets
-			if (m_entityList[i]->GetUniqueID().find("Ground") != std::string::npos || m_entityList[i]->GetUniqueID().find("Wall") != std::string::npos ||
-				m_entityList[i]->GetUniqueID().find("Mob Spawner") != std::string::npos || m_entityList[i]->GetUniqueID().find("Bullet") != std::string::npos)
-			{
-				break;
-			}
+			//Get the entity type for the second entity
+			char otherEntity = m_entityList[j]->GetUniqueID()[0];
 
 			//Ignore collisions with self
 			if (i == j)
@@ -191,10 +202,10 @@ void Simplex::MyEntityManager::Update(void)
 			}
 
 			//Collisions for creepers
-			if (m_entityList[i]->GetUniqueID().find("Creeper") != std::string::npos)
+			if (entity == 'C')
 			{
 				//Check collisions with walls
-				if (m_entityList[j]->GetUniqueID().find("Wall") != std::string::npos)
+				if (otherEntity == 'W')
 				{
 					if (m_entityList[i]->IsColliding(m_entityList[j]))
 					{
@@ -220,7 +231,7 @@ void Simplex::MyEntityManager::Update(void)
 				}
 
 				//Check collisions with bullet
-				if (m_entityList[j]->GetUniqueID().find("Bullet") != std::string::npos)
+				else if (otherEntity == 'B')
 				{
 					if (m_entityList[i]->IsColliding(m_entityList[j]))
 					{
@@ -229,16 +240,19 @@ void Simplex::MyEntityManager::Update(void)
 							//Mark the bullet and the creeper for deletion
 							m_entityList[i]->MarkToDelete();
 							m_entityList[j]->MarkToDelete();
+
+							//Increase the player's kill count
+							numKilled++;
 						}
 					}
 				}
 			}
 
 			//Collisions for the player (Steve)
-			else if (m_entityList[i]->GetUniqueID().find("Steve") != std::string::npos)
+			else if (entity == 'S')
 			{
 				//Check collisions with walls
-				if (m_entityList[j]->GetUniqueID().find("Wall") != std::string::npos)
+				if (otherEntity == 'W')
 				{
 					if (m_entityList[i]->IsColliding(m_entityList[j]))
 					{
@@ -267,7 +281,7 @@ void Simplex::MyEntityManager::Update(void)
 				}
 
 				//Check collisions with creepers
-				else if (m_entityList[j]->GetUniqueID().find("Creeper") != std::string::npos)
+				else if (otherEntity == 'C')
 				{
 					if (m_entityList[i]->IsColliding(m_entityList[j]))
 					{

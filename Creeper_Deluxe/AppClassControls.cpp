@@ -15,11 +15,31 @@ void Application::ProcessMouseMovement(sf::Event a_event)
 }
 void Application::ProcessMousePressed(sf::Event a_event)
 {
+	MyEntity* bullet = nullptr;
+	MyEntity* player = nullptr;
+
 	switch (a_event.mouseButton.button)
 	{
 	default: break;
 	case sf::Mouse::Button::Left:
 		gui.m_bMousePressed[0] = true;
+
+		//Create the bullet entity
+		m_pEntityMngr->AddEntity("Custom\\Bullet.fbx", "Bullet");
+
+		//Get the bullet and player entity
+		bullet = m_pEntityMngr->GetEntity(-1);
+		player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
+
+		//Set the bullet position to the player's position with an offset for the gun
+		bullet->SetPos(player->GetPos() + vector3(ToMatrix4(player->GetRotation()) * vector4(-0.3f, 1.45f, 1.0f, 1.0f)));
+
+		//Set the bullet's forward to the player's forward
+		bullet->SetForward(player->GetForward());
+
+		//Set the bullet's model matrix
+		m_pEntityMngr->SetModelMatrix(glm::translate(bullet->GetPos()), -1);
+
 		break;
 	case sf::Mouse::Button::Middle:
 		gui.m_bMousePressed[1] = true;
@@ -400,20 +420,11 @@ void Application::CameraRotation(float a_fSpeed)
 		fDeltaMouse = static_cast<float>(MouseY - CenterY);
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
-
-	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
-	
-	/* Write the rotation code here */
 	//Change the Yaw and the Pitch of the camera
-	MyEntity* player = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Steve"));
-	m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
-	m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
-	player->SetForward(m_pCameraMngr->GetForward());
-	player->SetRight(m_pCameraMngr->GetRightward() * -1.0f);
-	//player->SetUp(m_pCameraMngr->GetUpward());
-	player->SetRotation(glm::inverse(glm::toQuat(glm::extractMatrixRotation(m_pCameraMngr->GetViewMatrix()))));
-	player->SetModelMatrix(player->GetModelMatrix() * glm::rotate(IDENTITY_M4, 180.0f, AXIS_Y));
-	
+	//m_pCameraMngr->ChangeYaw(fAngleY * 3.0f);
+	//m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
+	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
+
 }
 //Keyboard
 void Application::ProcessKeyboard(void)

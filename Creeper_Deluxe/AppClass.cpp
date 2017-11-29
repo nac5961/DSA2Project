@@ -94,11 +94,16 @@ void Application::InitVariables(void)
 
 	//Player (Steve)
 	m_pEntityMngr->AddEntity("Custom\\Steve.fbx", "Steve");
-	m_pEntityMngr->GetModel("Steve")->SetModelMatrix(glm::translate(m_pCameraMngr->GetPosition()));
 	
-	//Creeper
+	//Creeper (Preload to avoid texture bug)
 	m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(-2.0f, 0.0f, 0.0f)), "Creeper"); //Start Creeper slightly to the left
+	m_pEntityMngr->SetModelMatrix(glm::translate(0.0f, 40.0f, 0.0f), -1);
+	m_pEntityMngr->GetEntity(-1)->MarkToDelete(); //delete immediately
+
+	//Bullet (Preload to avoid texture bug)
+	m_pEntityMngr->AddEntity("Custom\\Bullet.fbx", "Bullet");
+	m_pEntityMngr->SetModelMatrix(glm::translate(0.0f, 40.0f, 0.0f), -1);
+	m_pEntityMngr->GetEntity(-1)->MarkToDelete(); //delete immediately
 
 	//Mob Spawners
 	for (int i = 1; i <= 4; i++)
@@ -177,7 +182,9 @@ void Application::Update(void)
 		if ((uint)fTime == 5) {
 			for (int i = 0; i < 5; i++) {
 				m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-				m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, ((float)creeperCount), 0.0f)));
+				MyEntity* creeper = m_pEntityMngr->GetEntity(-1);
+				creeper->SetPos(vector3(0.0f, 0.0f, (float)creeperCount));
+				m_pEntityMngr->SetModelMatrix(glm::translate(creeper->GetPos()));
 				creeperCount++;
 			}
 			fTime = m_pSystem->GetDeltaTime(uClock);
@@ -187,9 +194,11 @@ void Application::Update(void)
 	/* Set the updated model matrices for Steve and the Creepers here */
 	for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++)
 	{
+		//Get the entity type
+		char entity = m_pEntityMngr->GetUniqueID(i)[0];
+
 		//Ignore walls, the ground, and mob spawners
-		if (m_pEntityMngr->GetUniqueID(i).find("Wall") != std::string::npos || m_pEntityMngr->GetUniqueID(i).find("Ground") != std::string::npos
-			|| m_pEntityMngr->GetUniqueID(i).find("Mob Spawner") != std::string::npos)
+		if (entity == 'W' || entity == 'G' || entity == 'M')
 		{
 			continue;
 		}
@@ -208,7 +217,7 @@ void Application::Update(void)
 		}
 
 		//Creeper
-		if (m_pEntityMngr->GetUniqueID(i).find("Creeper") != std::string::npos)
+		if (entity == 'C')
 		{
 			//Get the creeper entity
 			MyEntity* creeper = m_pEntityMngr->GetEntity(i);
@@ -253,7 +262,7 @@ void Application::Update(void)
 		}
 
 		//Player
-		else if (m_pEntityMngr->GetUniqueID(i).find("Steve") != std::string::npos)
+		else if (entity == 'S')
 		{
 			//Get the player entity
 			MyEntity* player = m_pEntityMngr->GetEntity(i);
@@ -268,7 +277,7 @@ void Application::Update(void)
 		}
 
 		//Bullet
-		else if (m_pEntityMngr->GetUniqueID(i).find("Bullet") != std::string::npos)
+		else if (entity == 'B')
 		{
 			//Get the bullet entity
 			MyEntity* bullet = m_pEntityMngr->GetEntity(i);
@@ -278,7 +287,7 @@ void Application::Update(void)
 			vector3 bulletForward = bullet->GetForward();
 
 			//Move the bullet along the forward vector
-			bulletPos += bulletForward * 0.1f;
+			bulletPos += bulletForward * 0.5f;
 
 			//Set the bullet's new position
 			bullet->SetPos(bulletPos);
@@ -307,7 +316,14 @@ void Application::Update(void)
 	m_pCameraMngr->SetPositionTargetAndUp(offset, offset + player->GetForward(), player->GetUp());
 
 	//Add objects to render list
-	m_pEntityMngr->AddEntityToRenderList(-1, true);
+	if (m_bDebug)
+	{
+		m_pEntityMngr->AddEntityToRenderList(-1, true);
+	}
+	else
+	{
+		m_pEntityMngr->AddEntityToRenderList(-1, false);
+	}
 }
 void Application::Display(void)
 {
