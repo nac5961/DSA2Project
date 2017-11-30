@@ -17,6 +17,7 @@ class MyEntity
 
 	float lifeTime = 4.0f; //for bullets
 	float waitTime = 0.0f; //for creepers
+	int health = 3; //for creepers
 
 	//for all entities
 	vector3 pos = ZERO_V3;
