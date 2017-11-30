@@ -175,7 +175,7 @@ void Application::Update(void)
 		//Update the life count
 		m_iLives = m_pEntityMngr->GetNumLives();
 
-		//Play player sound effect
+		//Play player damage sound effect
 		
 	}
 
