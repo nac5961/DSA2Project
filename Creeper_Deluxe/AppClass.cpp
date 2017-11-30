@@ -240,6 +240,12 @@ void Application::Update(void)
 			//Delete the entity if it's ready to be deleted (Creeper and Bullet)
 			if (m_pEntityMngr->GetEntity(i)->GetCanDelete())
 			{
+				if (entity == 'C')
+				{
+					//Play creeper death sound
+
+				}
+
 				//Remove the entity from the list
 				m_pEntityMngr->RemoveEntity(i);
 
