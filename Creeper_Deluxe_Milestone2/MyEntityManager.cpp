@@ -235,36 +235,14 @@ void Simplex::MyEntityManager::Update(void)
 				{
 					if (m_entityList[i]->IsColliding(m_entityList[j]))
 					{
-						//If bullet hits this creeper first, and the creeper is still alive
 						if (m_entityList[i]->GetCanDelete() == false && m_entityList[j]->GetCanDelete() == false)
 						{
-							//Get the creeper's health
-							int health = m_entityList[i]->GetHealth();
-
-							//Decrease it by 1
-							health--;
-
-							//Clamp it
-							if (health < 0)
-							{
-								health = 0;
-							}
-
-							//Mark the creeper for deletion when health is 0
-							if (health <= 0)
-							{
-								//Mark the creeper for deletion
-								m_entityList[i]->MarkToDelete();
-
-								//Increase the player's kill count
-								numKilled++;
-							}
-
-							//Set the creeper's health
-							m_entityList[i]->SetHealth(health);
-
-							//Mark the bullet for deletion
+							//Mark the bullet and the creeper for deletion
+							m_entityList[i]->MarkToDelete();
 							m_entityList[j]->MarkToDelete();
+
+							//Increase the player's kill count
+							numKilled++;
 						}
 					}
 				}
