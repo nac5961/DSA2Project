@@ -169,6 +169,16 @@ void Application::Update(void)
 	//Is the ArcBall active?
 	ArcBall();
 
+	//If the life count isn't updated
+	if (m_iLives != m_pEntityMngr->GetNumLives())
+	{
+		//Update the life count
+		m_iLives = m_pEntityMngr->GetNumLives();
+
+		//Play player sound effect
+		
+	}
+
 	if (!m_pEntityMngr->GetGameOver())
 	{
 		//Statics for creeper generation and delta time
