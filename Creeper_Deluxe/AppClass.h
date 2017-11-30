@@ -18,6 +18,7 @@ namespace Simplex
 class Application
 {
 	bool m_bDebug = false; //debug mode
+	int m_iLives = 3;
 	float spawnRadius = 5.0f;
 
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
