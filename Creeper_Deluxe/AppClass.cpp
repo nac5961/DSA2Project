@@ -294,7 +294,7 @@ void Application::Update(void)
 				matrix4 translation = glm::translate(creeper->GetPos());
 
 				quaternion rotation = creeper->GetRotation();
-				rotation *= 
+				//rotation *= 
 
 				//Set the model matrix of the creeper to translate to its new position
 				creeper->SetModelMatrix(glm::translate(creeper->GetPos()));
