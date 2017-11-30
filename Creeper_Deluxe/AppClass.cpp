@@ -169,6 +169,16 @@ void Application::Update(void)
 	//Is the ArcBall active?
 	ArcBall();
 
+	//If the life count isn't updated
+	if (m_iLives != m_pEntityMngr->GetNumLives())
+	{
+		//Update the life count
+		m_iLives = m_pEntityMngr->GetNumLives();
+
+		//Play player sound effect
+		
+	}
+
 	if (!m_pEntityMngr->GetGameOver())
 	{
 		//Statics for creeper generation and delta time
@@ -230,6 +240,12 @@ void Application::Update(void)
 			//Delete the entity if it's ready to be deleted (Creeper and Bullet)
 			if (m_pEntityMngr->GetEntity(i)->GetCanDelete())
 			{
+				if (entity == 'C')
+				{
+					//Play creeper death sound
+
+				}
+
 				//Remove the entity from the list
 				m_pEntityMngr->RemoveEntity(i);
 
@@ -295,6 +311,54 @@ void Application::Update(void)
 
 					//Set the model matrix of the creeper to translate to its new position
 					creeper->SetModelMatrix(glm::translate(creeper->GetPos()));
+				}
+
+				//Get creeper health
+				int health = creeper->GetHealth();
+
+				//Full Health (Green Bar)
+				if (health == 3)
+				{
+					//Get the creeper model matrix
+					matrix4 creeperMatrix = creeper->GetModelMatrix();
+
+					//Set health bar model matrix
+					matrix4 barTranslation = glm::translate(vector3(0.0f, 2.0f, 0.0f));
+					matrix4 barScale = glm::scale(vector3(1.0f, 0.18f, 0.14f));
+					matrix4 m4Health = creeperMatrix * barTranslation * barScale;
+
+					//Draw green bar above creeper
+					m_pMeshMngr->AddCubeToRenderList(m4Health, C_GREEN);
+				}
+
+				//Hit Once (Yellow Bar)
+				else if (health == 2)
+				{
+					//Get the creeper model matrix
+					matrix4 creeperMatrix = creeper->GetModelMatrix();
+
+					//Set health bar model matrix
+					matrix4 barTranslation = glm::translate(vector3(0.0f, 2.0f, 0.0f));
+					matrix4 barScale = glm::scale(vector3(0.7f, 0.18f, 0.14f));
+					matrix4 m4Health = creeperMatrix * barTranslation * barScale;
+
+					//Draw yellow bar above creeper
+					m_pMeshMngr->AddCubeToRenderList(m4Health, C_YELLOW);
+				}
+
+				//Hit Twice (Red Bar)
+				else if (health == 1)
+				{
+					//Get the creeper model matrix
+					matrix4 creeperMatrix = creeper->GetModelMatrix();
+
+					//Set health bar model matrix
+					matrix4 barTranslation = glm::translate(vector3(0.0f, 2.0f, 0.0f));
+					matrix4 barScale = glm::scale(vector3(0.3f, 0.18f, 0.14f));
+					matrix4 m4Health = creeperMatrix * barTranslation * barScale;
+
+					//Draw red bar above creeper
+					m_pMeshMngr->AddCubeToRenderList(m4Health, C_RED);
 				}
 			}
 
