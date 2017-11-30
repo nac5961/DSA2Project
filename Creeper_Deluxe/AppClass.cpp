@@ -291,6 +291,10 @@ void Application::Update(void)
 				creeperPos += creeper->GetForward() * 0.1f;
 				//vector3 creeperMove = (creeperPos + creeper->GetForward()) * 0.1f;
 				creeper->SetPos(creeperPos);
+				matrix4 translation = glm::translate(creeper->GetPos());
+
+				quaternion rotation = creeper->GetRotation();
+				rotation *= 
 
 				//Set the model matrix of the creeper to translate to its new position
 				creeper->SetModelMatrix(glm::translate(creeper->GetPos()));
