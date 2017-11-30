@@ -100,12 +100,12 @@ void Application::InitVariables(void)
 	
 	//Creeper (Preload to avoid texture bug)
 	m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-	m_pEntityMngr->SetModelMatrix(glm::translate(0.0f, 40.0f, 0.0f), -1);
+	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, 40.0f, 0.0f)), -1);
 	m_pEntityMngr->GetEntity(-1)->MarkToDelete(); //delete immediately
 
 	//Bullet (Preload to avoid texture bug)
 	m_pEntityMngr->AddEntity("Custom\\Bullet.fbx", "Bullet");
-	m_pEntityMngr->SetModelMatrix(glm::translate(0.0f, 40.0f, 0.0f), -1);
+	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, 40.0f, 0.0f)), -1);
 	m_pEntityMngr->GetEntity(-1)->MarkToDelete(); //delete immediately
 
 	//Mob Spawners
