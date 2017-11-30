@@ -169,6 +169,16 @@ void Application::Update(void)
 	//Is the ArcBall active?
 	ArcBall();
 
+	//If the life count isn't updated
+	if (m_iLives != m_pEntityMngr->GetNumLives())
+	{
+		//Update the life count
+		m_iLives = m_pEntityMngr->GetNumLives();
+
+		//Play sound
+		std::cout << "Updated" << std::endl;
+	}
+
 	if (!m_pEntityMngr->GetGameOver())
 	{
 		//Statics for creeper generation and delta time
@@ -182,7 +192,7 @@ void Application::Update(void)
 		// For this version, they begin spawning at the beginning of the world and move creeperCount units forward (just so we can see and make sure it works right)
 		if (creeperCount < 30) {
 			fTime += deltaTime;
-			std::cout << fTime << std::endl;
+			//std::cout << fTime << std::endl;
 
 			if ((uint)fTime >= 5) {
 				for (int i = 0; i < 5; i++) {
@@ -230,6 +240,12 @@ void Application::Update(void)
 			//Delete the entity if it's ready to be deleted (Creeper and Bullet)
 			if (m_pEntityMngr->GetEntity(i)->GetCanDelete())
 			{
+				if (entity == 'C')
+				{
+					//Play sound
+
+				}
+
 				//Remove the entity from the list
 				m_pEntityMngr->RemoveEntity(i);
 
