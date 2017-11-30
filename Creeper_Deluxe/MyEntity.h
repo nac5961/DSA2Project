@@ -50,6 +50,9 @@ public:
 	void SetWaitTime(float a_fTime) { waitTime = a_fTime; }
 	float GetWaitTime() { return waitTime; }
 
+	void SetHealth(int a_iHealth) { health = a_iHealth; }
+	int GetHealth() { return health; }
+
 	void SetRotation(quaternion a_qRotation) { rotation = a_qRotation; }
 	quaternion GetRotation() { return rotation; }
 
