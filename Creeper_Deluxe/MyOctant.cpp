@@ -16,7 +16,7 @@ Simplex::MyOctant::MyOctant(uint a_uMaxLevel)
 	m_uLevel = m_uID = 0;
 
 	//Set size to radius of the circle used in appclass.cpp (base octant)
-	m_fSize = 75.0f;
+	m_fSize = 20.0f;
 
 	//Set min and max points
 	m_v3Max = m_v3Center + vector3(m_fSize / 2.0f); // divide by 2.0f to use half width

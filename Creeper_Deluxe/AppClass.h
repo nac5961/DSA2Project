@@ -10,13 +10,16 @@ Date: 2017/06
 #include "ControllerConfiguration.h"
 #include "imgui\ImGuiObject.h"
 
-#include "MyEntityManager.h"
+//#include "MyEntityManager.h"
+#include "MyOctant.h"
 
 namespace Simplex
 {
 	//Adding Application to the Simplex namespace
 class Application
 {
+	MyOctant* m_pRoot = nullptr;
+	uint m_uOctantLevels = 0;
 	bool m_bDebug = false; //debug mode
 	int m_iLives = 3;
 	float spawnRadius = 5.0f;

@@ -11,6 +11,9 @@ void Application::InitVariables(void)
 	//Enable first person mode
 	m_bFPC = true;
 
+	//Set octant levels
+	m_uOctantLevels = 2;
+
 	m_pLightMngr->SetPosition(vector3(0.0f, 3.0f, 13.0f), 1); //set the position of first light (0 is reserved for ambient light)
 
 	//Entity Manager
@@ -407,6 +410,9 @@ void Application::Update(void)
 			}
 		}
 
+		//Create octree
+		m_pRoot = new MyOctant(m_uOctantLevels);
+
 		//Update Entity Manager
 		m_pEntityMngr->Update();
 
@@ -423,6 +429,10 @@ void Application::Update(void)
 	if (m_bDebug)
 	{
 		m_pEntityMngr->AddEntityToRenderList(-1, true);
+		if (m_pRoot != nullptr)
+		{
+			m_pRoot->Display();
+		}
 	}
 	else
 	{
@@ -442,6 +452,13 @@ void Application::Display(void)
 
 	//clear the render list
 	m_pMeshMngr->ClearRenderList();
+
+	//Delete octree since we're moving objects to different dimensions
+	if (m_pRoot != nullptr)
+	{
+		m_pEntityMngr->ClearDimensionSetAll();
+		SafeDelete(m_pRoot);
+	}
 	
 	//draw gui
 	DrawGUI();
@@ -453,6 +470,11 @@ void Application::Release(void)
 {
 	//release the entity manager
 	m_pEntityMngr->ReleaseInstance();
+
+	if (m_pRoot != nullptr)
+	{
+		SafeDelete(m_pRoot);
+	}
 
 	//release GUI
 	ShutdownGUI();
