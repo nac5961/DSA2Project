@@ -45,7 +45,6 @@ int Simplex::MyEntityManager::GetEntityIndex(String a_sUniqueID)
 	return -1;
 }
 //Accessors
-Simplex::uint Simplex::MyEntityManager::GetEntityCount(void) { return m_uEntityCount; }
 Model* Simplex::MyEntityManager::GetModel(uint a_uIndex)
 {
 	//if the list is empty return blank

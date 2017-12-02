@@ -251,12 +251,6 @@ public:
 	OUTPUT: shares at least one dimension?
 	*/
 	bool SharesDimension(String a_sUniqueID, MyEntity* const a_pOther);
-	/*
-	USAGE: Will return the count of Entities in the system
-	ARGUMENTS: ---
-	OUTPUT: MyEntity count
-	*/
-	uint GetEntityCount(void);
 	
 private:
 	/*
