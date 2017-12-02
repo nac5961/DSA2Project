@@ -16,7 +16,7 @@ Simplex::MyOctant::MyOctant(uint a_uMaxLevel)
 	m_uLevel = m_uID = 0;
 
 	//Set size to radius of the circle used in appclass.cpp (base octant)
-	m_fSize = 20.0f;
+	m_fSize = 45.0f;
 
 	//Set min and max points
 	m_v3Max = m_v3Center + vector3(m_fSize / 2.0f); // divide by 2.0f to use half width
@@ -124,11 +124,24 @@ bool Simplex::MyOctant::IsColliding(uint a_uIndex)
 
 void Simplex::MyOctant::Display()
 {
-	//Display this octant
-	matrix4 m4Scale = glm::scale(vector3(m_fSize));
-	matrix4 m4Translation = glm::translate(m_v3Center);
-	matrix4 m4Model = m4Translation * m4Scale;
-	m_pMeshManager->AddWireCubeToRenderList(m4Model, C_YELLOW, RENDER_WIRE);
+	//Display octants with entities
+	if (m_EntityList.size() > 0)
+	{
+		//Display this octant
+		matrix4 m4Scale = glm::scale(vector3(m_fSize));
+		matrix4 m4Translation = glm::translate(m_v3Center);
+		matrix4 m4Model = m4Translation * m4Scale;
+		m_pMeshManager->AddWireCubeToRenderList(m4Model, C_YELLOW, RENDER_WIRE);
+	}
+
+	else
+	{
+		//Display this octant
+		matrix4 m4Scale = glm::scale(vector3(m_fSize));
+		matrix4 m4Translation = glm::translate(m_v3Center);
+		matrix4 m4Model = m4Translation * m4Scale;
+		m_pMeshManager->AddWireCubeToRenderList(m4Model, C_WHITE, RENDER_WIRE);
+	}
 
 	//Display all child octants
 	for (uint i = 0; i < m_uChildren; i++)

@@ -210,8 +210,44 @@ void Simplex::MyEntityManager::Update(void)
 			//Collisions for creepers
 			if (entity == 'C')
 			{
+				//Check collisions with other creepers
+				if (otherEntity == 'C')
+				{
+					if (m_entityList[i]->IsColliding(m_entityList[j]))
+					{
+						//Get both creeper entities
+						MyEntity* creeper1 = m_entityList[i];
+						MyEntity* creeper2 = m_entityList[j];
+
+						//Get the position of both creepers
+						vector3 creeperPos1 = creeper1->GetPos();
+						vector3 creeperPos2 = creeper2->GetPos();
+
+						//Get the vector from creeper2 to creeper1
+						vector3 pushBack = creeperPos1 - creeperPos2;
+
+						//Get the magnitude of the pushback vector
+						float magnitude = sqrtf(pow(pushBack.x, 2) + pow(pushBack.y, 2) + pow(pushBack.z, 2));
+
+						//Set the normalized vector
+						vector3 pushBackNormalized = pushBack / magnitude;
+
+						//Zero out the y to prevent flying
+						pushBackNormalized = vector3(pushBackNormalized.x, 0.0f, pushBackNormalized.z);
+
+						//Apply to creeper1
+						creeperPos1 += pushBackNormalized * 0.02f;
+
+						//Set position
+						creeper1->SetPos(creeperPos1);
+
+						//Set model matrix
+						creeper1->SetModelMatrix(glm::translate(creeperPos1));
+					}
+				}
+
 				//Check collisions with walls
-				if (otherEntity == 'W')
+				else if (otherEntity == 'W')
 				{
 					if (m_entityList[i]->IsColliding(m_entityList[j]))
 					{

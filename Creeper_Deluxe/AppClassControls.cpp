@@ -101,8 +101,9 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 		else {
 			//glutSetCursor(GLUT_CURSOR_LEFT_ARROW);
 		}
-		break;
 		*/
+		break;
+		
 	case sf::Keyboard::Space:
 		m_sound.play();
 		break;
