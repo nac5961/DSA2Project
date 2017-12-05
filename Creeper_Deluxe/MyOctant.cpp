@@ -2,11 +2,13 @@
 using namespace Simplex;
 uint Simplex::MyOctant::m_uMaxLevel = 0;
 uint Simplex::MyOctant::m_uOctantCount = 0;
+uint Simplex::MyOctant::m_uIdealEntityCount = 0;
 
-Simplex::MyOctant::MyOctant(uint a_uMaxLevel)
+Simplex::MyOctant::MyOctant(uint a_uMaxLevel, uint a_uIdealEntityCount)
 {
-	//Set the max subdivision level
+	//Set the max subdivision level and ideal count
 	m_uMaxLevel = a_uMaxLevel;
+	m_uIdealEntityCount = a_uIdealEntityCount;
 
 	//Set the singletons
 	m_pEntityManager = MyEntityManager::GetInstance();
@@ -16,7 +18,7 @@ Simplex::MyOctant::MyOctant(uint a_uMaxLevel)
 	m_uLevel = m_uID = 0;
 
 	//Set size to radius of the circle used in appclass.cpp (base octant)
-	m_fSize = 45.0f;
+	m_fSize = 75.0f;
 
 	//Set min and max points
 	m_v3Max = m_v3Center + vector3(m_fSize / 2.0f); // divide by 2.0f to use half width
@@ -74,6 +76,7 @@ Simplex::MyOctant::~MyOctant()
 	{
 		m_uOctantCount = 0;
 		m_uMaxLevel = 0;
+		m_uIdealEntityCount = 0;
 	}
 }
 
@@ -124,24 +127,11 @@ bool Simplex::MyOctant::IsColliding(uint a_uIndex)
 
 void Simplex::MyOctant::Display()
 {
-	//Display octants with entities
-	if (m_EntityList.size() > 0)
-	{
-		//Display this octant
-		matrix4 m4Scale = glm::scale(vector3(m_fSize));
-		matrix4 m4Translation = glm::translate(m_v3Center);
-		matrix4 m4Model = m4Translation * m4Scale;
-		m_pMeshManager->AddWireCubeToRenderList(m4Model, C_YELLOW, RENDER_WIRE);
-	}
-
-	else
-	{
-		//Display this octant
-		matrix4 m4Scale = glm::scale(vector3(m_fSize));
-		matrix4 m4Translation = glm::translate(m_v3Center);
-		matrix4 m4Model = m4Translation * m4Scale;
-		m_pMeshManager->AddWireCubeToRenderList(m4Model, C_WHITE, RENDER_WIRE);
-	}
+	//Display this octant
+	matrix4 m4Scale = glm::scale(vector3(m_fSize));
+	matrix4 m4Translation = glm::translate(m_v3Center);
+	matrix4 m4Model = m4Translation * m4Scale;
+	m_pMeshManager->AddWireCubeToRenderList(m4Model, C_YELLOW, RENDER_WIRE);
 
 	//Display all child octants
 	for (uint i = 0; i < m_uChildren; i++)
@@ -231,45 +221,79 @@ void Simplex::MyOctant::ConstructTree(uint a_uLevel)
 		return;
 	}
 
-	vector3 offset = ZERO_V3; //offset for child position
-	float size = m_fSize / 2.0f * 0.5f; //half width of child
+	//Variable to check if an octant should subdivide
+	bool canSubdivide = false;
 
-	//Create the 8 children recursively
-	for (uint i = 0; i < 8; i++)
+	for (uint i = 0; i < m_pEntityManager->GetEntityCount(); i++)
 	{
-		if (i & 1)
+		//If entity collides with octant, add entity to list
+		if (IsColliding(i))
 		{
-			offset.x = size;
-		}
-		else
-		{
-			offset.x = -size;
-		}
+			m_EntityList.push_back(i);
 
-		if (i & 2)
-		{
-			offset.y = size;
-		}
-		else
-		{
-			offset.y = -size;
-		}
+			//Mark to subdivide if at ideal count
+			if (m_EntityList.size() >= m_uIdealEntityCount)
+			{
+				canSubdivide = true;
 
-		if (i & 4)
-		{
-			offset.z = size;
-		}
-		else
-		{
-			offset.z = -size;
-		}
+				//Clear list
+				m_EntityList.clear();
 
-		//Create child (Parameters: parent, center, size, level)
-		m_pChildren[i] = new MyOctant(this, m_v3Center + offset, size * 2.0f, a_uLevel + 1);
+				break;
+			}
+		}
 	}
 
-	//Set number of children
-	m_uChildren = 8;
+	if (canSubdivide)
+	{
+		vector3 offset = ZERO_V3; //offset for child position
+		float size = m_fSize / 2.0f * 0.5f; //half width of child
+
+		//Create the 8 children recursively
+		for (uint i = 0; i < 8; i++)
+		{
+			if (i & 1)
+			{
+				offset.x = size;
+			}
+			else
+			{
+				offset.x = -size;
+			}
+
+			if (i & 2)
+			{
+				offset.y = size;
+			}
+			else
+			{
+				offset.y = -size;
+			}
+
+			if (i & 4)
+			{
+				offset.z = size;
+			}
+			else
+			{
+				offset.z = -size;
+			}
+
+			//Create child (Parameters: parent, center, size, level)
+			m_pChildren[i] = new MyOctant(this, m_v3Center + offset, size * 2.0f, a_uLevel + 1);
+		}
+
+		//Set number of children
+		m_uChildren = 8;
+	}
+	else
+	{
+		//Add entity to the dimension
+		for (uint i = 0; i < m_EntityList.size(); i++)
+		{
+			m_pEntityManager->AddDimension(m_EntityList[i], m_uID);
+		}
+	}
 }
 
 void Simplex::MyOctant::AssignIDtoEntity()

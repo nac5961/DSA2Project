@@ -13,6 +13,7 @@ namespace Simplex
 	private:
 		static uint m_uOctantCount; //total number of octants in the scene
 		static uint m_uMaxLevel; //number of octree subdivisions
+		static uint m_uIdealEntityCount; //number of entities to have before subdividing
 
 		uint m_uID = 0; //id of octant
 		uint m_uLevel = 0; //the current level of the octant
@@ -36,7 +37,7 @@ namespace Simplex
 	public:
 		//Main Constructor
 		//a_uLevel -> max subdivision level
-		MyOctant(uint a_uMaxLevel);
+		MyOctant(uint a_uMaxLevel, uint a_uIdealEntityCount);
 
 		//Sub Constructor
 		//a_v3Center -> center of octant
