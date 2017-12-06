@@ -171,13 +171,13 @@ void Application::InitVariables(void)
 		std::cout << "Sound not loaded";
 	}
 	m_sound.setBuffer(m_soundBuffer);
-	if (m_soundBuffer.loadFromFile("death.ogg")) {
+	if (m_soundBuffer2.loadFromFile("death.ogg")) {
 		std::cout << "Loaded sound";
 	}
 	else {
 		std::cout << "Sound not loaded";
 	}
-	m_sound1.setBuffer(m_soundBuffer);
+	m_sound1.setBuffer(m_soundBuffer2);
 }
 void Application::Update(void)
 {

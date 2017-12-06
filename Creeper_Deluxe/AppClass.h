@@ -65,6 +65,7 @@ private:
 	uint m_uActCont = 0; //Active Controller of the Application
 
 	sf::SoundBuffer m_soundBuffer; //buffer to play sound from
+	sf::SoundBuffer m_soundBuffer2; //buffer to play sound from
 	sf::Sound m_sound; //sound effect
 	sf::Sound m_sound1; //sound effect
 	sf::Music m_soundBGM; //background music
