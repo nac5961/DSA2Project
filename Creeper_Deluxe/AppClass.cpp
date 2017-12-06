@@ -14,6 +14,16 @@ void Application::InitVariables(void)
 	//Set octant levels
 	m_uOctantLevels = 2;
 
+	//Sound
+	String sRoute = m_pSystem->m_pFolder->GetFolderData();
+	sRoute += m_pSystem->m_pFolder->GetFolderAudio();
+
+	m_soundBuffer.loadFromFile(sRoute + "Creeper.wav");
+	m_sound.setBuffer(m_soundBuffer);
+
+	m_soundBuffer2.loadFromFile(sRoute + "Damage.wav");
+	m_sound2.setBuffer(m_soundBuffer2);
+
 	m_pLightMngr->SetPosition(vector3(0.0f, 3.0f, 13.0f), 1); //set the position of first light (0 is reserved for ambient light)
 
 	//Entity Manager
@@ -179,25 +189,22 @@ void Application::Update(void)
 		m_iLives = m_pEntityMngr->GetNumLives();
 
 		//Play player damage sound effect
-		
+		m_sound2.play();
 	}
 
 	if (!m_pEntityMngr->GetGameOver())
 	{
 		//Statics for creeper generation and delta time
-		static float fTime = 0;
 		static uint uClock = m_pSystem->GenClock();
 		float deltaTime = m_pSystem->GetDeltaTime(uClock);
 
 		//Update fTime
-		fTime += deltaTime;
+		m_fTime += deltaTime;
 
-		std::cout << fTime << std::endl;
-
-		if (fTime >= 5)
+		if (m_fTime >= 5)
 		{
 			//Reset fTime
-			fTime = 0.0f;
+			m_fTime = 0.0f;
 
 			if (m_uNumCreepers < m_uMaxCreepers)
 			{
@@ -254,7 +261,7 @@ void Application::Update(void)
 					m_uNumCreepers--;
 
 					//Play creeper death sound
-
+					m_sound.play();
 				}
 
 				//Remove the entity from the list

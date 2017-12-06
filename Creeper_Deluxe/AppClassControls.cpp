@@ -103,7 +103,39 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 		}
 		*/
 		break;
+	case sf::Keyboard::R:
+		//Reset appclass variables
+		m_uNumCreepers = 0;
+		m_fTime = 0.0f;
+		m_iLives = 3;
+
+		//Reset entity manager variables
+		m_pEntityMngr->ResetGameOver();
+		m_pEntityMngr->ResetNumKilled();
+		m_pEntityMngr->ResetNumLives();
+
+		//Delete all creepers
+		for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++)
+		{
+			//Get the entity type
+			char entity = m_pEntityMngr->GetUniqueID(i)[0];
+
+			if (entity == 'C')
+			{
+				//Remove the creeper
+				m_pEntityMngr->RemoveEntity(i);
+
+				i--;
+			}
+
+			else if (entity == 'S')
+			{
+				//Set the player back at the center
+				m_pEntityMngr->GetEntity(i)->SetPos(vector3(0.0f, 0.0f, 0.0f));
+			}
+		}
 		
+		break;
 	case sf::Keyboard::Space:
 		m_sound.play();
 		break;

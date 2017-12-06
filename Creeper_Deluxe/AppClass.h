@@ -25,6 +25,9 @@ class Application
 	float spawnRadius = 5.0f;
 	int m_uNumCreepers = 1;
 	int m_uMaxCreepers = 1;
+	float m_fTime = 0.0f;
+	sf::SoundBuffer m_soundBuffer2;
+	sf::Sound m_sound2;
 
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
 	vector3 m_v3Creeper; //position of the creeper

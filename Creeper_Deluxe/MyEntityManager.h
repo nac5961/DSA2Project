@@ -22,11 +22,14 @@ class MyEntityManager
 	std::vector<MyEntity*> m_entityList; //entities list
 public:
 	int GetNumLives() { return numLives; }
+	void ResetNumLives() { numLives = 3; }
 
 	void SetNumKilled(int a_fNum) { numKilled = a_fNum; }
 	int GetNumKilled() { return numKilled; }
+	void ResetNumKilled() { numKilled = 0; }
 
 	bool GetGameOver() { return gameOver; }
+	void ResetGameOver() { gameOver = false; }
 
 	uint GetEntityCount() { return m_uEntityCount; }
 	/*
