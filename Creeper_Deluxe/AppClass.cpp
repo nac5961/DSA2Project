@@ -104,7 +104,8 @@ void Application::InitVariables(void)
 	//Creeper (Preload to avoid texture bug)
 	m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
 	m_pEntityMngr->SetModelMatrix(glm::translate(vector3(0.0f, 40.0f, 0.0f)), -1);
-	m_pEntityMngr->GetEntity(-1)->MarkToDelete(); //delete immediately
+	m_pEntityMngr->RemoveEntity(-1); //delete immediately
+	//m_pEntityMngr->GetEntity(-1)->MarkToDelete(); //delete immediately
 
 	//Bullet (Preload to avoid texture bug)
 	m_pEntityMngr->AddEntity("Custom\\Bullet.fbx", "Bullet");
@@ -187,31 +188,48 @@ void Application::Update(void)
 		//Statics for creeper generation and delta time
 		static uint uClock = m_pSystem->GenClock();
 		float deltaTime = m_pSystem->GetDeltaTime(uClock);
+
+		//Increase time
 		fTime += deltaTime;
 
 		// Generates Creepers
-		// Creates 5 every five sentences
-		// For this version, they begin spawning at the beginning of the world and move creeperCount units forward (just so we can see and make sure it works right)
-		if (fTime >= 5.0f) {
+		// Creates 5 every five seconds
+		if (fTime >= 5.0f) 
+		{
+			//Reset fTime
 			fTime = 0.0f;
-			if (creeperCount < maxCreepers) {
+
+			if (creeperCount < maxCreepers) 
+			{
+				//Set num creepers to spawn
 				int creepersToSpawn = maxCreepers - creeperCount;
-				if (creepersToSpawn > 5) {
+
+				//Clamp to 5
+				if (creepersToSpawn > 5) 
+				{
 					creepersToSpawn = 5;
-					for (int i = 0; i < creepersToSpawn; i++) {
-						m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
-						MyEntity* creeper = m_pEntityMngr->GetEntity(-1);
+				}
 
-						int index = (rand() % 4) + 1;
-						float xOffset = (rand() / (float)RAND_MAX * (spawnRadius * 2)) - spawnRadius;
-						float zOffset = (rand() / (float)RAND_MAX * (spawnRadius * 2)) - spawnRadius;
-						MyEntity* spawn = nullptr;
-						spawn = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Mob Spawner" + std::to_string(index)));
+				//Spawn creepers
+				for (int i = 0; i < creepersToSpawn; i++) 
+				{
+					//Create creeper entity
+					m_pEntityMngr->AddEntity("Custom\\Creeper.fbx", "Creeper");
+					MyEntity* creeper = m_pEntityMngr->GetEntity(-1);
 
-						creeper->SetPos(spawn->GetPos() + vector3(xOffset, 0.0f, zOffset));
-						creeper->SetModelMatrix(glm::translate(creeper->GetPos()));
-						creeperCount++;
-					}
+					//Get random mob spawner
+					int index = (rand() % 4) + 1;
+					float xOffset = (rand() / (float)RAND_MAX * (spawnRadius * 2)) - spawnRadius;
+					float zOffset = (rand() / (float)RAND_MAX * (spawnRadius * 2)) - spawnRadius;
+					MyEntity* spawn = nullptr;
+					spawn = m_pEntityMngr->GetEntity(m_pEntityMngr->GetEntityIndex("Mob Spawner" + std::to_string(index)));
+
+					//Set model matrix
+					creeper->SetPos(spawn->GetPos() + vector3(xOffset, 0.0f, zOffset));
+					creeper->SetModelMatrix(glm::translate(creeper->GetPos()));
+
+					//Increase count
+					creeperCount++;
 				}
 			}
 		}
@@ -235,6 +253,9 @@ void Application::Update(void)
 			{
 				if (entity == 'C')
 				{
+					//Delete creeper count
+					creeperCount--;
+
 					//Play creeper death sound
 
 				}
@@ -299,8 +320,9 @@ void Application::Update(void)
 
 					//Add the creeper's forward to the creeper's position
 					creeperPos += creeper->GetForward() * 0.05f;
-					//vector3 creeperMove = (creeperPos + creeper->GetForward()) * 0.1f;
 					creeper->SetPos(creeperPos);
+
+					//Ger rotation angle
 					float angle = glm::orientedAngle(AXIS_Z, creeperToPlayer, AXIS_Y);
 
 					//Set the model matrix of the creeper to translate to its new position

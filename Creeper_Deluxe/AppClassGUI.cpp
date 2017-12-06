@@ -160,6 +160,8 @@ void Application::DrawGUI(void)
 			m_pMeshMngr->PrintLine("");//Add a line on top
 
 		m_pMeshMngr->PrintLine("						Game Over");
+		m_pMeshMngr->PrintLine("");
+		m_pMeshMngr->PrintLine("					Press 'R' to restart");
 	}
 #pragma endregion
 
