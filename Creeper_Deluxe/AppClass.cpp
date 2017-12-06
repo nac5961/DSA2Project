@@ -402,7 +402,7 @@ void Application::Update(void)
 		}
 
 		//Create octree
-		m_pRoot = new MyOctant(m_uOctantLevels);
+		m_pRoot = new MyOctant(m_uOctantLevels, 5);
 
 		//Update Entity Manager
 		m_pEntityMngr->Update();
