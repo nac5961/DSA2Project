@@ -23,7 +23,7 @@ void Application::ProcessMousePressed(sf::Event a_event)
 	default: break;
 	case sf::Mouse::Button::Left:
 		gui.m_bMousePressed[0] = true;
-
+		//m_sound1.play();
 		//Create the bullet entity
 		m_pEntityMngr->AddEntity("Custom\\Bullet.fbx", "Bullet");
 

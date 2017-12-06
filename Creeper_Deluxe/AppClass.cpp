@@ -164,6 +164,20 @@ void Application::InitVariables(void)
 			mobSpawner->SetModelMatrix(glm::translate(mobSpawner->GetPos()));
 		}
 	}
+	if (m_soundBuffer.loadFromFile("classic_hurt.wav")) {
+		std::cout << "Loaded sound";
+	}
+	else {
+		std::cout << "Sound not loaded";
+	}
+	m_sound.setBuffer(m_soundBuffer);
+	if (m_soundBuffer.loadFromFile("death.ogg")) {
+		std::cout << "Loaded sound";
+	}
+	else {
+		std::cout << "Sound not loaded";
+	}
+	m_sound1.setBuffer(m_soundBuffer);
 }
 void Application::Update(void)
 {
@@ -180,7 +194,7 @@ void Application::Update(void)
 		m_iLives = m_pEntityMngr->GetNumLives();
 
 		//Play player damage sound effect
-		
+		m_sound.play();
 	}
 
 	if (!m_pEntityMngr->GetGameOver())
@@ -257,7 +271,7 @@ void Application::Update(void)
 					creeperCount--;
 
 					//Play creeper death sound
-
+					m_sound1.play();
 				}
 
 				//Remove the entity from the list

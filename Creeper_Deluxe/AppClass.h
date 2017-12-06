@@ -66,6 +66,7 @@ private:
 
 	sf::SoundBuffer m_soundBuffer; //buffer to play sound from
 	sf::Sound m_sound; //sound effect
+	sf::Sound m_sound1; //sound effect
 	sf::Music m_soundBGM; //background music
 
 public:
