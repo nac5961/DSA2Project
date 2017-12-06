@@ -23,6 +23,8 @@ class Application
 	bool m_bDebug = false; //debug mode
 	int m_iLives = 3;
 	float spawnRadius = 5.0f;
+	int m_uNumCreepers = 1;
+	int m_uMaxCreepers = 1;
 
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
 	vector3 m_v3Creeper; //position of the creeper
