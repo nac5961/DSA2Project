@@ -25,6 +25,7 @@ class MyEntity
 	vector3 up = AXIS_Y;
 	vector3 right = AXIS_X;
 	quaternion rotation;
+	float rotationAngle = 0.0f;
 
 	bool m_bInMemory = false; //loaded flag
 	bool m_bSetAxis = false; //render axis flag
@@ -58,6 +59,9 @@ public:
 
 	void SetRotation(quaternion a_qRotation) { rotation = a_qRotation; }
 	quaternion GetRotation() { return rotation; }
+
+	void SetRotationAngle(float a_fRotationAngle) { rotationAngle = a_fRotationAngle; }
+	float GetRotationAngle() { return rotationAngle; }
 
 	void SetPos(vector3 a_v3Pos) { pos = a_v3Pos; }
 	vector3 GetPos() { return pos; }

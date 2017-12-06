@@ -183,12 +183,12 @@ void Application::Update(void)
 		
 	}
 
+	//Statics for creeper generation and delta time
+	static uint uClock = m_pSystem->GenClock();
+	float deltaTime = m_pSystem->GetDeltaTime(uClock);
+
 	if (!m_pEntityMngr->GetGameOver())
 	{
-		//Statics for creeper generation and delta time
-		static uint uClock = m_pSystem->GenClock();
-		float deltaTime = m_pSystem->GetDeltaTime(uClock);
-
 		//Increase time
 		fTime += deltaTime;
 
@@ -319,11 +319,14 @@ void Application::Update(void)
 					creeper->SetForward(creeperToPlayer);
 
 					//Add the creeper's forward to the creeper's position
-					creeperPos += creeper->GetForward() * 0.05f;
+					creeperPos += creeper->GetForward() * 0.07f;
 					creeper->SetPos(creeperPos);
 
-					//Ger rotation angle
+					//Get rotation angle
 					float angle = glm::orientedAngle(AXIS_Z, creeperToPlayer, AXIS_Y);
+
+					//Set rotation angle
+					creeper->SetRotationAngle(angle);
 
 					//Set the model matrix of the creeper to translate to its new position
 					creeper->SetModelMatrix(glm::translate(creeper->GetPos()) * ToMatrix4(glm::angleAxis(angle, AXIS_Y)));
