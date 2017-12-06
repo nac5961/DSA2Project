@@ -161,6 +161,8 @@ void Application::DrawGUI(void)
 
 		m_pMeshMngr->PrintLine("						Game Over");
 		m_pMeshMngr->PrintLine("");
+		m_pMeshMngr->PrintLine("					You killed " + std::to_string(m_pEntityMngr->GetNumKilled()) + " creepers");
+		m_pMeshMngr->PrintLine("");
 		m_pMeshMngr->PrintLine("					Press 'R' to restart");
 	}
 #pragma endregion

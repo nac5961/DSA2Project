@@ -242,7 +242,7 @@ void Simplex::MyEntityManager::Update(void)
 						creeper1->SetPos(creeperPos1);
 
 						//Set model matrix
-						creeper1->SetModelMatrix(glm::translate(creeperPos1));
+						creeper1->SetModelMatrix(glm::translate(creeperPos1) * ToMatrix4(glm::angleAxis(creeper1->GetRotationAngle(), AXIS_Y)));
 					}
 				}
 
