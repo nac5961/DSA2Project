@@ -104,15 +104,6 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 		*/
 		break;
 	case sf::Keyboard::R:
-		//Reset appclass variables
-		m_iLives = 3;
-		creeperCount = 0;
-		fTime = 0.0f;
-
-		//Reset entity manager variables
-		m_pEntityMngr->ResetNumKilled();
-		m_pEntityMngr->ResetNumLives();
-		m_pEntityMngr->ResetGameOver();
 
 		//Remove creepers and reset player
 		for (uint i = 0; i < m_pEntityMngr->GetEntityCount(); i++)
@@ -129,12 +120,31 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 				i--;
 			}
 
+			//Bullet
+			else if (entity == 'B')
+			{
+				//Remove bullet
+				m_pEntityMngr->RemoveEntity(i);
+
+				i--;
+			}
+
 			else if (entity == 'S')
 			{
 				//Reset player position
 				m_pEntityMngr->GetEntity(i)->SetPos(vector3(0.0f, 0.0f, 0.0f));
 			}
 		}
+
+		//Reset appclass variables
+		m_iLives = 3;
+		creeperCount = 0;
+		fTime = 0.0f;
+
+		//Reset entity manager variables
+		m_pEntityMngr->ResetNumKilled();
+		m_pEntityMngr->ResetNumLives();
+		m_pEntityMngr->ResetGameOver();
 
 		//Reset camera
 		//Set the position and target of the camera
