@@ -8,7 +8,7 @@ void Application::InitVariables(void)
 		vector3(0.0f, 1.0f, 12.0f),	//Target
 		AXIS_Y);					//Up
 
-	//Enable first person mode
+	//Enable first person mode here
 	m_bFPC = true;
 
 	//Set octant levels
